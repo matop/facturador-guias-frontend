@@ -4,6 +4,7 @@ import { Search, FileText, Tag, Receipt, ArrowLeft, X } from 'lucide-react'
 import { GuiasGrid } from '@/components/GuiasGrid'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner'
+import { MetricCard } from '@/components/MetricCard'
 import type { SummaryRow } from '@/components/ConfirmDialog/ConfirmDialog'
 import { DateFilter } from '@/components/DateFilter'
 import { useSeleccionStore } from '@/store/seleccionStore'
@@ -156,39 +157,27 @@ export default function GuiasPage() {
       {/* Metric cards */}
       {!loading && (
         <div className="grid grid-cols-3 gap-3" data-testid="guias-metricas">
-          <div className="bg-card border border-border rounded-xl p-4 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: 'var(--primary)' }} />
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5" aria-hidden="true" />
-              Guías de despacho
-            </p>
-            <p className="text-2xl font-medium text-foreground font-mono leading-none">{guiasPreFiltradas.length}</p>
-            <p className="text-xs text-muted-foreground mt-1">pendientes de facturar</p>
-          </div>
+          <MetricCard
+            icon={<FileText className="w-3.5 h-3.5" aria-hidden="true" />}
+            label="Guías de despacho"
+            value={guiasPreFiltradas.length}
+            subtitle="pendientes de facturar"
+          />
 
-          <div className="bg-card border border-border rounded-xl p-4 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: 'var(--muted-foreground)' }} />
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5" aria-hidden="true" />
-              Agrupadores detectados
-            </p>
-            <p className="text-2xl font-medium text-foreground font-mono leading-none">{agrupadores.length}</p>
-            <p className="text-xs text-muted-foreground mt-1 truncate">
-              {agrupadores.length > 0 ? agrupadores.map((a) => a.codigo).join(' · ') : '—'}
-            </p>
-          </div>
+          <MetricCard
+            icon={<Tag className="w-3.5 h-3.5" aria-hidden="true" />}
+            label="Agrupadores detectados"
+            value={agrupadores.length}
+            subtitle={agrupadores.length > 0 ? agrupadores.map((a) => a.codigo).join(' · ') : '—'}
+            accentColor="var(--muted-foreground)"
+          />
 
-          <div className="bg-card border border-border rounded-xl p-4 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: 'var(--primary)' }} />
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-              <Receipt className="w-3.5 h-3.5" aria-hidden="true" />
-              Monto total
-            </p>
-            <p className="text-2xl font-medium text-foreground font-mono leading-none">{fmtMonto(montoTotal)}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              ~{agrupadores.length || 1} factura{agrupadores.length !== 1 ? 's' : ''} a emitir
-            </p>
-          </div>
+          <MetricCard
+            icon={<Receipt className="w-3.5 h-3.5" aria-hidden="true" />}
+            label="Monto total"
+            value={fmtMonto(montoTotal)}
+            subtitle={`~${agrupadores.length || 1} factura${agrupadores.length !== 1 ? 's' : ''} a emitir`}
+          />
         </div>
       )}
 
@@ -216,7 +205,7 @@ export default function GuiasPage() {
       )}
 
       {/* Panel de filtros unificado */}
-      <div className="bg-card border border-border rounded-xl divide-y divide-border shadow-sm">
+      <div className="bg-card border border-border rounded-xl divide-y divide-border">
 
         {/* Búsqueda */}
         <div className="px-4 py-3 relative">
@@ -351,7 +340,7 @@ export default function GuiasPage() {
       </div>
 
       {/* Grilla de guías */}
-      <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <GuiasGrid
           guias={guiasFiltradas}
           loading={loading}

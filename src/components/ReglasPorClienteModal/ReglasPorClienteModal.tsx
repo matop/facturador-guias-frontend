@@ -107,8 +107,7 @@ export function ReglasPorClienteModal({
           <div>
             <h2
               data-testid="modal-titulo"
-              className="text-[17px] font-bold text-foreground leading-tight"
-              style={{ fontFamily: "'Syne', system-ui, sans-serif" }}
+              className="font-display text-[17px] font-bold text-foreground leading-tight"
             >
               {clienteNombre}
             </h2>

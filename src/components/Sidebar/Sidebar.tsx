@@ -18,7 +18,7 @@ export default function Sidebar() {
   return (
     <aside
       className={cn(
-        'relative bg-slate-900 flex flex-col shrink-0 transition-all duration-300',
+        'relative bg-card flex flex-col shrink-0 transition-all duration-300',
         collapsed ? 'w-20' : 'w-64'
       )}
     >
@@ -30,7 +30,7 @@ export default function Sidebar() {
             collapsed && 'justify-center w-full'
           )}
         >
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shrink-0">
             <span className="text-primary-foreground font-bold text-xl">G</span>
           </div>
           {!collapsed && (
@@ -52,7 +52,7 @@ export default function Sidebar() {
         size="icon"
         aria-label={collapsed ? 'Expandir sidebar' : 'Colapsar sidebar'}
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-7 h-6 w-6 rounded-full shadow-sm border-border p-0 text-muted-foreground hover:text-foreground"
+        className="absolute -right-3 top-7 h-6 w-6 rounded-full border-border p-0 text-muted-foreground hover:text-foreground"
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
       </Button>
@@ -76,7 +76,7 @@ export default function Sidebar() {
                     collapsed && 'justify-center',
                     isActive
                       ? 'bg-primary/20 text-primary border-l-2 border-primary pl-[10px]'
-                      : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                   )
                 }
               >

@@ -95,7 +95,7 @@ function GroupHeaderRow({ group, onFacturarAgrupador }: GroupHeaderRowProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span
-              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold font-mono tracking-wide shadow-sm"
+              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold font-mono tracking-wide"
               style={{
                 backgroundColor: color,
                 color: chipText,
