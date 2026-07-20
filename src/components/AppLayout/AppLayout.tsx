@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
-import { FileText, Receipt, Users, Sun, Moon, AlertTriangle } from 'lucide-react'
+import { FileText, Receipt, Users, AlertTriangle } from 'lucide-react'
 import Sidebar from '../Sidebar/Sidebar'
-import { useThemeStore } from '@/store/themeStore'
 import { usePeriodoStore } from '@/store/periodoStore'
 import { fetchMetricas } from '@/services/api'
 import type { MetricasResumen } from '@/types'
@@ -29,7 +28,6 @@ const PERIODO_LABEL: Record<string, string> = {
 export default function AppLayout() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { theme, toggleTheme } = useThemeStore()
   const periodo = usePeriodoStore((s) => s.periodo)
   const [globalDialogOpen, setGlobalDialogOpen] = useState(false)
   const [metricas, setMetricas] = useState<MetricasResumen | null>(null)
@@ -107,19 +105,6 @@ export default function AppLayout() {
 
           {/* Right controls */}
           <div className="flex items-center gap-2.5">
-            {/* Theme toggle */}
-            <button
-              data-testid="theme-toggle"
-              aria-label={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-              onClick={toggleTheme}
-              className="h-8 w-8 flex items-center justify-center rounded-lg transition-colors hover:bg-white/10"
-              style={{ color: 'var(--topbar-pill-text)', opacity: 0.7 }}
-            >
-              {theme === 'dark'
-                ? <Sun className="w-4 h-4" />
-                : <Moon className="w-4 h-4" />}
-            </button>
-
             {/* Facturar Global */}
             <button
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 shadow-sm"
