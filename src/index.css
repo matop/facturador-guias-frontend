@@ -34,39 +34,6 @@
   --topbar-btn-hover:       #6b79c7;
 }
 
-/* ─── LIGHT MODE (html.light) ─────────────────────────────────────── */
-/* Design language: Gdes Mockup/styles.css — navy/blue palette        */
-html.light {
-  --background:             #f0f5fb;  /* era #f4f7fb — más contraste vs card */
-  --foreground:             #0f2236;  /* era #1a2e45 — más oscuro, ratio ~14:1 */
-  --card:                   #ffffff;
-  --card-foreground:        #0f2236;
-  --popover:                #ffffff;
-  --popover-foreground:     #0f2236;
-  --primary:                #1565c0;  /* era #1971c2 — ratio 4.8:1 sobre bg */
-  --primary-foreground:     #ffffff;
-  --secondary:              #dceeff;
-  --secondary-foreground:   #0f2236;
-  --muted:                  #e4edf8;
-  --muted-foreground:       #3d5a73;  /* era #4a6785 — ratio 6.1:1 sobre bg */
-  --accent:                 #dceeff;
-  --accent-foreground:      #1565c0;
-  --destructive:            #b91c1c;
-  --destructive-foreground: #ffffff;
-  --border:                 #b3ccdf;  /* era #d6e4f5 — mucho más visible */
-  --input:                  #e8f2fc;
-  --ring:                   #1565c0;
-  /* Topbar-specific tokens */
-  --topbar-bg:              #ffffff;
-  --topbar-border:          #b3ccdf;  /* consistente con --border */
-  --topbar-pill-bg:         #eaf3fd;
-  --topbar-pill-border:     #b3ccdf;
-  --topbar-pill-text:       #0f2236;
-  --topbar-icon-color:      #1565c0;
-  --topbar-btn-bg:          #1565c0;
-  --topbar-btn-hover:       #0d47a1;
-}
-
 @layer base {
   * {
     border-color: var(--border);
@@ -97,11 +64,6 @@ input[type="number"] {
 }
 
 /* Date input calendar icon theming */
-html.light input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: none;
-  opacity: 0.5;
-  cursor: pointer;
-}
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.8);
   opacity: 0.6;
