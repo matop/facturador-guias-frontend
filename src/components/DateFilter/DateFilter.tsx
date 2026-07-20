@@ -67,7 +67,7 @@ export function DateFilter({ onChange }: DateFilterProps) {
   return (
     <div
       data-testid="date-filter"
-      className="flex items-center gap-3 flex-wrap bg-card border border-border rounded-xl shadow-sm px-4 py-3"
+      className="flex items-center gap-3 flex-wrap bg-card border border-border rounded-xl px-4 py-3"
     >
       {/* ── Period navigation ─────────────────────────────────────────── */}
       <div className="flex items-center gap-1">

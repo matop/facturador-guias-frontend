@@ -71,8 +71,8 @@ export default function AppLayout() {
           {/* Page title */}
           <div className="flex-1 min-w-0">
             <div
-              className="font-bold text-[18px] leading-tight truncate"
-              style={{ color: 'var(--topbar-pill-text)', fontFamily: "'Syne', system-ui, sans-serif" }}
+              className="font-display font-bold text-[18px] leading-tight truncate"
+              style={{ color: 'var(--topbar-pill-text)' }}
             >
               {page.title}
             </div>
@@ -107,7 +107,7 @@ export default function AppLayout() {
           <div className="flex items-center gap-2.5">
             {/* Facturar Global */}
             <button
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
               style={{ backgroundColor: 'var(--topbar-btn-bg)' }}
               onClick={() => setGlobalDialogOpen(true)}
             >
@@ -132,10 +132,7 @@ export default function AppLayout() {
         >
           <div className="bg-card rounded-xl shadow-2xl border border-border w-[520px] max-w-[92vw] p-7">
             {/* Title */}
-            <h2
-              className="text-[17px] font-bold text-foreground mb-1"
-              style={{ fontFamily: "'Syne', system-ui, sans-serif" }}
-            >
+            <h2 className="font-display text-[17px] font-bold text-foreground mb-1">
               Facturar Global · {PERIODO_LABEL[periodo] ?? periodo}
             </h2>
             <p className="text-sm text-muted-foreground mb-4">

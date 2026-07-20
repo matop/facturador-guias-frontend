@@ -127,7 +127,7 @@ export default function Clientes() {
       </div>
 
       {/* Grilla de clientes */}
-      <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <ClientesGrid
           clientes={clientes}
           loading={loading}

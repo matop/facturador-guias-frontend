@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { FileText, Users, Receipt } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { MetricCard } from '@/components/MetricCard'
 import { fetchMetricas } from '@/services/api'
 import { usePeriodoStore } from '@/store/periodoStore'
 import type { MetricasResumen } from '@/types'
 
-interface MetricCard {
+interface MetricCardData {
   label: string
   value: string | number
   subtitle: string
+  icon: ReactNode
 }
 
 function fmtMonto(n: number): string {
@@ -42,11 +45,12 @@ export function MetricsPanel() {
     )
   }
 
-  const cards: MetricCard[] = [
+  const cards: MetricCardData[] = [
     {
       label: 'Total guías pendientes',
       value: metricas.totalGuias,
       subtitle: 'en todos los clientes activos',
+      icon: <FileText className="w-3.5 h-3.5" aria-hidden="true" />,
     },
     {
       label: 'Clientes involucrados',
@@ -56,24 +60,26 @@ export function MetricsPanel() {
         : metricas.clientesConRezagadas > 0
           ? `${metricas.clientesConRezagadas} con rezagadas del mes anterior`
           : 'sin rezagadas del mes anterior',
+      icon: <Users className="w-3.5 h-3.5" aria-hidden="true" />,
     },
     {
       label: 'Estimación a facturar',
       value: fmtMonto(metricas.montoEstimado),
       subtitle: `~${metricas.factEst} facturas proyectadas`,
+      icon: <Receipt className="w-3.5 h-3.5" aria-hidden="true" />,
     },
   ]
 
   return (
     <div className="grid grid-cols-3 gap-4">
       {cards.map((card) => (
-        <Card key={card.label}>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">{card.label}</p>
-            <p className="text-2xl font-bold text-foreground">{card.value}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{card.subtitle}</p>
-          </CardContent>
-        </Card>
+        <MetricCard
+          key={card.label}
+          icon={card.icon}
+          label={card.label}
+          value={card.value}
+          subtitle={card.subtitle}
+        />
       ))}
     </div>
   )

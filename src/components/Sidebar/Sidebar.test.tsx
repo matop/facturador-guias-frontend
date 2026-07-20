@@ -14,7 +14,7 @@ function renderSidebar(currentPath = '/clientes') {
 describe('Sidebar', () => {
   it('has dark background', () => {
     const { container } = renderSidebar()
-    expect(container.firstChild).toHaveClass('bg-slate-900')
+    expect(container.firstChild).toHaveClass('bg-card')
   })
 
   it('shows version footer', () => {

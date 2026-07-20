@@ -180,10 +180,7 @@ export default function AdminReglas() {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Section header */}
       <div>
-        <h2
-          className="text-[22px] font-bold text-foreground leading-tight"
-          style={{ fontFamily: "'Syne', system-ui, sans-serif" }}
-        >
+        <h2 className="font-display text-[22px] font-bold text-foreground leading-tight">
           Configuración de Agrupación
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
@@ -463,10 +460,7 @@ export default function AdminReglas() {
           onClick={(e) => { if (e.target === e.currentTarget) setConfirmCandidato(null) }}
         >
           <div className="bg-card rounded-xl shadow-2xl border border-border w-[480px] max-w-[92vw] p-7">
-            <h2
-              className="text-[17px] font-bold text-foreground mb-1"
-              style={{ fontFamily: "'Syne', system-ui, sans-serif" }}
-            >
+            <h2 className="font-display text-[17px] font-bold text-foreground mb-1">
               Asignar regla de agrupación
             </h2>
             <p className="text-sm text-muted-foreground mb-4">
