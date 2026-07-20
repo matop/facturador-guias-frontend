@@ -1,6 +1,6 @@
 # Sistema de Diseño — facturaGdes (Sistema de Facturación Automatizada)
 
-> **Versión:** 3.1.0 | **Última actualización:** Julio 2026
+> **Versión:** 3.2.0 | **Última actualización:** Julio 2026
 >
 > Este documento es la **fuente única de verdad** para toda decisión visual y de componentes del sistema de facturación.
 > Cualquier agente o desarrollador que trabaje en la UI **DEBE** leer y respetar este archivo antes de escribir código.
@@ -14,7 +14,7 @@ Estas reglas tienen prioridad absoluta. Si entran en conflicto con cualquier otr
 1. **NO tocar lógica de negocio.** Hooks, servicios, llamadas a API, cálculos de precios y cualquier código que no sea puramente de presentación son intocables. Solo se modifica lo relacionado al frontend visual: JSX, clases de Tailwind, estructura de componentes UI y estilos CSS.
 2. **Coherencia visual total.** Cada pantalla del sistema debe verse como parte de la misma aplicación. Si un patrón visual existe en una pantalla, debe replicarse idénticamente en las demás.
 3. **PROHIBIDO hardcodear colores.** Usar exclusivamente las variables semánticas definidas en `index.css` y mapeadas en la sección de tokens de este documento (ej. `bg-primary`, `text-foreground`, `border-border`). Nunca usar valores arbitrarios como `bg-[#1E40AF]` cuando existe un token equivalente.
-4. **Componentes UI base obligatorios.** Antes de crear un `<button>`, `<input>`, `<select>` o `<table>` HTML crudo, verificar si existe un componente en `src/components/ui/`. Si existe, usarlo. Si no existe, crearlo siguiendo el patrón de los existentes (CVA + Radix + forwardRef).
+4. **Componentes UI base obligatorios.** Antes de crear un `<button>`, `<input>`, `<select>` o `<table>` HTML crudo, verificar si existe un componente en `src/components/ui/`. Si existe, usarlo. Si no existe, crearlo siguiendo el patrón de los existentes (CVA + forwardRef).
 5. **Verificación post-cambio.** Al terminar cualquier cambio de UI, invocar las skills `frontend-design`, `web-design-guidelines`, `ui-ux-pro-max` y `vercel-react-best-practices` para validar que se siguen las mejores prácticas de desarrollo de interfaces web, experiencia de usuario y programación React.
 
 ---
@@ -42,7 +42,7 @@ Estamos construyendo una herramienta de trabajo **rápida, predecible y accesibl
 | Build Tool | Vite | — |
 | Routing | React Router | v6 |
 | Estado global | Zustand | — |
-| Componentes UI | shadcn/ui (Radix UI) | — |
+| Componentes UI | Primitivos propios (patrón shadcn/ui, sin Radix) | — |
 | Variantes | class-variance-authority (CVA) | — |
 | Iconos | lucide-react | — |
 | Tests | Vitest + @testing-library/react | — |
@@ -68,7 +68,7 @@ src/
 │   └── Historial.tsx     # Auditoría post-emisión
 ├── components/
 │   ├── AppLayout/        # Layout shell (sidebar + header + Outlet)
-│   ├── Sidebar/          # Sidebar con NavLink activo (bg-slate-900)
+│   ├── Sidebar/          # Sidebar con NavLink activo (bg-card)
 │   ├── MetricsPanel/     # Panel superior de métricas (3 cards)
 │   ├── ClientesGrid/     # Grilla con skeleton + empty state
 │   ├── GuiasGrid/        # Grilla agrupada por agrupador, checkboxes
@@ -240,10 +240,13 @@ badges "Receptor" vs "Detalle". Usar con opacidad Tailwind (`/20`, `/40`) en vez
 
 | Tipo | Familia | Clase Tailwind | Uso |
 |---|---|---|---|
-| Sans-serif | `Inter, sans-serif` | `font-sans` | Todo el texto de interfaz |
-| Monospace | `Roboto Mono, monospace` | `font-mono` | Códigos de barra, SKU, datos numéricos críticos |
+| Sans-serif (body) | `system-ui` (stack `sans` por defecto de Tailwind) | `font-sans` | Todo el texto de interfaz. **Nunca hubo `Inter` instalado ni mapeado** — el body usa el stack del sistema. |
+| Display | `Syne` + fallback `sans` (vía `@fontsource/syne`, pesos 400/700) | `font-display` | Títulos de marca y headings destacados (logo, títulos de sección) |
+| Monospace | `Roboto Mono` + fallback `mono` (vía `@fontsource/roboto-mono`, pesos 400/500/600/700) | `font-mono` | Códigos de barra, SKU, valores numéricos de métricas |
 
-**Regla:** Las columnas de código de barra/SKU **deben** usar `font-mono`. Existen las clases utilitarias `.sku-column` y `.barcode-data` en `index.css` para esto.
+Ambas familias se importan en `src/main.tsx` (los CSS de `@fontsource/*`, que sirven `.woff2` locales — sin CDN) y se mapean en `tailwind.config.ts` (`fontFamily.display`, `fontFamily.mono`) reutilizando `defaultTheme.fontFamily` como fallback.
+
+**Regla:** Las columnas de código de barra/SKU y los valores numéricos de las métricas **deben** usar `font-mono`. Los títulos de marca/sección usan `font-display` (nunca `style={{fontFamily:...}}` inline).
 
 #### Inputs numéricos (cantidad, precio)
 
@@ -323,12 +326,13 @@ input[type="number"] {
 
 #### Sombras
 
+> **Regla (desde fase 5):** las sombras se reservan **exclusivamente** para overlays flotantes (modales y la bulk bar). Todo lo demás —cards, sidebar, botones, header, paneles, grillas— se separa del fondo con **borde** (`border border-border`), nunca con sombra.
+
 | Nivel | Clase | Uso |
 |---|---|---|
-| Sutil | `shadow-sm` | Cards, sidebar |
-| Estándar | `shadow-md` | Botones principales, header |
-| Elevado | `shadow-lg` | Modales, drawers |
-| Extra | `shadow-xl` | Overlays |
+| Overlay | `shadow-xl` / `shadow-2xl` | **Único uso permitido:** modales (`ConfirmDialog`, `ReglasPorClienteModal`, `ResincronizarReglaDialog`, modal Facturar Global, modal de `AdminReglas`) y la bulk bar flotante de `Guias.tsx`. |
+
+Los antiguos niveles `shadow-sm`/`shadow-md`/`shadow-lg` sobre cards, botones, sidebar (logo + toggle), header y paneles fueron **eliminados en fase 5**. Si un elemento necesita destacarse del fondo y no es un overlay flotante, usar borde.
 
 ---
 
@@ -336,7 +340,7 @@ input[type="number"] {
 
 ### 5.1. Componentes Base (`src/components/ui/`)
 
-Estos son los primitivos del sistema. Se construyen con el patrón shadcn/ui: **Radix UI + CVA + forwardRef + cn()**.
+Estos son los primitivos del sistema. Se construyen con el patrón shadcn/ui, pero **sin Radix** (no está instalado): **CVA + forwardRef + cn()**.
 
 #### `<Button />`
 
@@ -425,7 +429,7 @@ El `DialogContent` tiene `max-h-[85vh]` y usa `flex flex-col` para evitar desbor
 
 #### `<Select />`
 
-Basado en Radix UI Select con sub-componentes: `SelectTrigger`, `SelectContent`, `SelectItem`, `SelectLabel`, `SelectSeparator`.
+Select propio (`src/components/ui/select.tsx`, sin Radix) con sub-componentes: `SelectTrigger`, `SelectContent`, `SelectItem`, `SelectLabel`, `SelectSeparator`.
 
 **Regla:** Nunca usar `<select>` HTML crudo.
 
@@ -480,11 +484,11 @@ El sidebar **es colapsable** (`useState` local en `Sidebar.tsx`), alternando ent
 flotante en el borde derecho.
 
 ```tsx
-<aside className={cn('relative bg-slate-900 flex flex-col shrink-0 transition-all duration-300', collapsed ? 'w-20' : 'w-64')}>
+<aside className={cn('relative bg-card flex flex-col shrink-0 transition-all duration-300', collapsed ? 'w-20' : 'w-64')}>
 
   {/* Brand */}
   <div className="px-4 py-6 border-b border-border flex items-center">
-    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shrink-0">
       <span className="text-primary-foreground font-bold text-xl">G</span>
     </div>
     {!collapsed && (
@@ -497,7 +501,7 @@ flotante en el borde derecho.
 
   {/* Toggle button */}
   <Button variant="outline" size="icon" onClick={() => setCollapsed(!collapsed)}
-    className="absolute -right-3 top-7 h-6 w-6 rounded-full shadow-sm border-border p-0 text-muted-foreground hover:text-foreground">
+    className="absolute -right-3 top-7 h-6 w-6 rounded-full border-border p-0 text-muted-foreground hover:text-foreground">
     {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
   </Button>
 
@@ -509,7 +513,7 @@ flotante en el borde derecho.
         cn('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
           isActive
             ? 'bg-primary/20 text-primary border-l-2 border-primary pl-[10px]'
-            : 'text-slate-400 hover:bg-white/5 hover:text-white')
+            : 'text-muted-foreground hover:bg-accent hover:text-foreground')
       }
     >
       <Users size={16} />
@@ -521,9 +525,10 @@ flotante en el borde derecho.
 ```
 
 **Reglas:**
-- Sidebar: `bg-slate-900` fijo — no cambia con el estado colapsado/expandido.
+- Sidebar: `bg-card` fijo — no cambia con el estado colapsado/expandido (recolor a token semántico en fase 5; antes era `bg-slate-900`).
 - Link activo: `bg-primary/20 text-primary border-l-2 border-primary`.
-- Link inactivo: `text-slate-400 hover:bg-white/5 hover:text-white`.
+- Link inactivo: `text-muted-foreground hover:bg-accent hover:text-foreground` (tokens semánticos; antes `text-slate-400 hover:bg-white/5 hover:text-white`).
+- Sin sombras: ni el logo ni el botón de toggle usan `shadow-*` (eliminadas en fase 5); la separación es por borde.
 - Ítem `/preview` solo visible cuando `seleccionActiva.length > 0`.
 - El botón de toggle usa `variant="outline"` de `<Button>` (que ya provee `bg-card`) — no agregar `style`/hex de fondo adicional.
 - Solo dos entradas activas hoy: `Clientes` y `Guías`. `/admin/reglas` queda fuera de la navegación (comentado en el código) — ver §"Fuera de Alcance" en `CLAUDE.md`.
