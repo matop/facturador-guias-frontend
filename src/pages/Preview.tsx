@@ -137,9 +137,9 @@ export default function PreviewPage() {
               data-testid={`proforma-${p.agrupadorId}`}
               className={`bg-card rounded-lg border-2 transition-colors ${
                 estado === 'aprobada'
-                  ? 'border-green-400'
+                  ? 'border-success-600'
                   : estado === 'rechazada'
-                    ? 'border-red-300'
+                    ? 'border-danger-600'
                     : 'border-border'
               }`}
             >

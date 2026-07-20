@@ -55,7 +55,22 @@ export default {
           600: '#DC2626',
           700: '#B91C1C',
         },
-        success: '#16A34A',
+        warning: {
+          50: '#332510',
+          100: '#4A3517',
+          600: '#F59E0B',
+          700: '#B45309',
+        },
+        success: {
+          DEFAULT: '#16A34A',
+          50: '#10281B',
+          100: '#1A3D28',
+          600: '#22C55E',
+        },
+        category: {
+          receptor: '#60A5FA',
+          detalle: '#A78BFA',
+        },
       },
     },
   },

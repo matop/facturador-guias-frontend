@@ -212,8 +212,7 @@ export default function AdminReglas() {
       {successMsg && (
         <div
           data-testid="success-msg"
-          className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium"
-          style={{ backgroundColor: '#d1fae5', border: '1px solid #6ee7b7', color: '#065f46' }}
+          className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium bg-success-50 border border-success-100 text-success-600"
         >
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           {successMsg}
@@ -224,8 +223,7 @@ export default function AdminReglas() {
       {error && (
         <div
           data-testid="error-discover"
-          className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm"
-          style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#7f1d1d' }}
+          className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm bg-danger-50 border border-danger-100 text-danger-600"
         >
           <AlertTriangle className="w-4 h-4 shrink-0" />
           {error}
@@ -259,11 +257,11 @@ export default function AdminReglas() {
                     data-testid={`regla-cliente-${r.reglaidl}`}
                     className={[
                       'flex items-center gap-3 rounded-lg px-3.5 py-2.5 border text-sm',
-                      r.activa ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-border',
+                      r.activa ? 'border-success/40 bg-success/5' : 'border-border',
                     ].join(' ')}
                   >
                     {r.activa && (
-                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: '#6ee7b7' }} />
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-success-600" />
                     )}
 
                     <div className="flex-1 min-w-0">
@@ -281,7 +279,7 @@ export default function AdminReglas() {
                             data-testid={`btn-save-nombre-${r.reglaidl}`}
                             onClick={() => handleSaveNombre(r.reglaidl)}
                             disabled={savingNombre}
-                            className="p-1 rounded text-emerald-400 hover:text-emerald-300 disabled:opacity-50"
+                            className="p-1 rounded text-success hover:text-success-600 disabled:opacity-50"
                           >
                             <Check className="w-3.5 h-3.5" />
                           </button>
@@ -386,7 +384,7 @@ export default function AdminReglas() {
                     data-testid={`candidato-${key}`}
                     className={[
                       'bg-card border rounded-xl p-5 flex flex-col gap-3 transition-colors',
-                      activoParaCliente ? 'border-emerald-500/40' : 'border-border hover:border-primary/30',
+                      activoParaCliente ? 'border-success/40' : 'border-border hover:border-primary/30',
                     ].join(' ')}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -401,7 +399,7 @@ export default function AdminReglas() {
                         {c.tipo === 'campo-receptor' ? 'Receptor' : 'Detalle'}
                       </span>
                       {activoParaCliente && (
-                        <span className="flex items-center gap-1 text-xs font-medium" style={{ color: '#6ee7b7' }}>
+                        <span className="flex items-center gap-1 text-xs font-medium text-success-600">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           Activa
                         </span>
@@ -512,8 +510,7 @@ export default function AdminReglas() {
             {activateError && (
               <div
                 data-testid="error-activar"
-                className="flex items-center gap-2 rounded-lg px-3.5 py-3 mb-4 text-sm"
-                style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#7f1d1d' }}
+                className="flex items-center gap-2 rounded-lg px-3.5 py-3 mb-4 text-sm bg-danger-50 border border-danger-100 text-danger-600"
               >
                 <AlertTriangle className="w-4 h-4 shrink-0" />
                 {activateError}
