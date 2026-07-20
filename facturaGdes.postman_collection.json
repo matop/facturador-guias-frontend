@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "facturaGdes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3334" },
+    { "key": "empkey",   "value": "977" },
+    { "key": "periodo",  "value": "2026-05" },
+    { "key": "rut",      "value": "" },
+    { "key": "gfackey",  "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "GET clientes del período",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/clientes?periodo={{periodo}}",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "clientes"],
+              "query": [{ "key": "periodo", "value": "{{periodo}}" }]
+            }
+          }
+        },
+        {
+          "name": "PUT asignar regla a cliente",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/clientes/{{rut}}/regla",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "clientes", "{{rut}}", "regla"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reglaidl\": \"<id_regla>\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Guías",
+      "item": [
+        {
+          "name": "GET guías agrupadas (todas)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/guias/agrupadas?periodo={{periodo}}",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "guias", "agrupadas"],
+              "query": [{ "key": "periodo", "value": "{{periodo}}" }]
+            }
+          }
+        },
+        {
+          "name": "GET guías agrupadas (por cliente)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/guias/agrupadas?periodo={{periodo}}&rut={{rut}}",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "guias", "agrupadas"],
+              "query": [
+                { "key": "periodo", "value": "{{periodo}}" },
+                { "key": "rut",     "value": "{{rut}}" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Facturas / Proformas",
+      "item": [
+        {
+          "name": "GET proformas del período",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/facturas/proforma?periodo={{periodo}}",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "facturas", "proforma"],
+              "query": [{ "key": "periodo", "value": "{{periodo}}" }]
+            }
+          }
+        },
+        {
+          "name": "POST generar proformas BORRADOR",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/facturas/proforma/generar?periodo={{periodo}}",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "facturas", "proforma", "generar"],
+              "query": [{ "key": "periodo", "value": "{{periodo}}" }]
+            }
+          }
+        },
+        {
+          "name": "PATCH aprobar proforma",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/facturas/proforma/{{gfackey}}/aprobar",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "facturas", "proforma", "{{gfackey}}", "aprobar"]
+            }
+          }
+        },
+        {
+          "name": "PATCH anular proforma",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/empresas/{{empkey}}/facturas/proforma/{{gfackey}}/anular",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "{{empkey}}", "facturas", "proforma", "{{gfackey}}", "anular"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reglas",
+      "item": [
+        {
+          "name": "GET discover candidatos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/reglas/discover?empkey={{empkey}}",
+              "host": ["{{base_url}}"],
+              "path": ["reglas", "discover"],
+              "query": [{ "key": "empkey", "value": "{{empkey}}" }]
+            }
+          }
+        },
+        {
+          "name": "GET reglas activas de empresa",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/reglas/empresa/{{empkey}}",
+              "host": ["{{base_url}}"],
+              "path": ["reglas", "empresa", "{{empkey}}"]
+            }
+          }
+        },
+        {
+          "name": "POST activar regla",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/reglas/activar",
+              "host": ["{{base_url}}"],
+              "path": ["reglas", "activar"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"empkey\": \"{{empkey}}\",\n  \"config\": {}\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export { GuiasGrid } from './GuiasGrid'
