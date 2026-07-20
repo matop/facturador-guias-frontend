@@ -150,7 +150,7 @@ export function ReglasPorClienteModal({
                   className={[
                     'flex items-center justify-between gap-3 rounded-lg px-4 py-3 border transition-colors',
                     r.activa
-                      ? 'border-emerald-500/40 bg-emerald-500/5'
+                      ? 'border-success/40 bg-success/5'
                       : 'border-border bg-background',
                   ].join(' ')}
                 >
@@ -159,8 +159,7 @@ export function ReglasPorClienteModal({
                     {r.activa && (
                       <span
                         data-testid={`badge-activa-${r.reglaidl}`}
-                        className="flex items-center gap-1 text-xs font-semibold shrink-0"
-                        style={{ color: '#6ee7b7' }}
+                        className="flex items-center gap-1 text-xs font-semibold shrink-0 text-success-600"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Activa

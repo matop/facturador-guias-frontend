@@ -66,11 +66,10 @@ export function ConfirmDialog({
 
         {/* Warning box */}
         {warning && (
-          <div className="flex gap-3 items-start rounded-lg p-3.5 mb-5"
-            style={{ backgroundColor: '#fff3e0', border: '1px solid #fed7aa' }}
+          <div className="flex gap-3 items-start rounded-lg p-3.5 mb-5 bg-warning-50 border border-warning-100"
           >
-            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: '#e65100' }} />
-            <p className="text-sm leading-relaxed" style={{ color: '#7c3a00' }}
+            <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0 text-warning-600" />
+            <p className="text-sm leading-relaxed text-warning-600"
               dangerouslySetInnerHTML={{ __html: warning }}
             />
           </div>
