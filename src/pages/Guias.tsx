@@ -195,11 +195,8 @@ export default function GuiasPage() {
       {/* Filter action banner — visible cuando hay filtro activo */}
       {hasActiveFilter && !loading && (
         <div
-          className="rounded-xl p-3.5 flex items-center justify-between gap-4"
-          style={{
-            background: 'linear-gradient(135deg, var(--primary), #145ea8)',
-            boxShadow: '0 4px 16px rgba(25,113,194,.25)',
-          }}
+          className="rounded-xl p-3.5 flex items-center justify-between gap-4 bg-gradient-to-br from-primary to-lucien-700"
+          style={{ boxShadow: '0 4px 16px rgba(80,93,170,.25)' }}
         >
           <div className="text-white text-sm font-semibold">
             <span className="font-mono text-blue-200">{guiasFiltradas.length}</span>
@@ -368,8 +365,8 @@ export default function GuiasPage() {
       <div
         className="fixed bottom-7 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3.5 px-5 py-3 rounded-xl transition-all duration-300"
         style={{
-          backgroundColor: '#0b1829',
-          boxShadow: '0 8px 40px rgba(11,24,41,.40)',
+          backgroundColor: 'var(--popover)',
+          boxShadow: '0 8px 40px rgba(29,34,66,.40)',
           transform: `translateX(-50%) translateY(${seleccionActiva.length > 0 ? '0' : '90px'})`,
           opacity: seleccionActiva.length > 0 ? 1 : 0,
           pointerEvents: seleccionActiva.length > 0 ? 'auto' : 'none',

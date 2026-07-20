@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Settings, CheckCircle2, AlertTriangle, RefreshCw, Edit2, Check, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import {
   fetchDiscoverCandidatos,
   activarRegla,
@@ -389,12 +390,12 @@ export default function AdminReglas() {
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span
-                        className="text-xs font-semibold rounded-full px-3 py-1 border"
-                        style={
+                        className={cn(
+                          'text-xs font-semibold rounded-full px-3 py-1 border',
                           c.tipo === 'campo-receptor'
-                            ? { backgroundColor: '#3b82f620', borderColor: '#3b82f655', color: '#93c5fd' }
-                            : { backgroundColor: '#8b5cf620', borderColor: '#8b5cf655', color: '#c4b5fd' }
-                        }
+                            ? 'bg-category-receptor/20 border-category-receptor/40 text-category-receptor'
+                            : 'bg-category-detalle/20 border-category-detalle/40 text-category-detalle'
+                        )}
                       >
                         {c.tipo === 'campo-receptor' ? 'Receptor' : 'Detalle'}
                       </span>

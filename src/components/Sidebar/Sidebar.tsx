@@ -52,7 +52,7 @@ export default function Sidebar() {
         size="icon"
         aria-label={collapsed ? 'Expandir sidebar' : 'Colapsar sidebar'}
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-7 h-6 w-6 rounded-full shadow-sm bg-[#1C1C1C] border-border p-0 text-muted-foreground hover:text-foreground"
+        className="absolute -right-3 top-7 h-6 w-6 rounded-full shadow-sm border-border p-0 text-muted-foreground hover:text-foreground"
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
       </Button>

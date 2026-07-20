@@ -1,6 +1,6 @@
 # Sistema de Diseño — facturaGdes (Sistema de Facturación Automatizada)
 
-> **Versión:** 3.0.0 | **Última actualización:** Mayo 2026
+> **Versión:** 3.1.0 | **Última actualización:** Julio 2026
 >
 > Este documento es la **fuente única de verdad** para toda decisión visual y de componentes del sistema de facturación.
 > Cualquier agente o desarrollador que trabaje en la UI **DEBE** leer y respetar este archivo antes de escribir código.
@@ -78,8 +78,7 @@ src/
 ├── store/
 │   ├── seleccionStore.ts # Guías seleccionadas (Zustand)
 │   ├── periodoStore.ts   # Mes activo (Actual / Anterior)
-│   ├── tenantStore.ts    # Tenant activa
-│   └── themeStore.ts     # dark/light toggle (persiste en localStorage)
+│   └── tenantStore.ts    # Tenant activa
 ├── services/
 │   ├── api.ts            # apiFetch con tenantId+periodo automáticos
 │   ├── guiasService.ts
@@ -94,7 +93,7 @@ src/
 │       ├── handlers.ts   # GET /api/clientes, /api/metricas, /api/guias
 │       └── fixtures.ts   # 5 clientes + guías + métricas
 ├── router.tsx            # / → /clientes, /guias, /preview, /historial
-└── index.css             # CSS custom properties dark/light (NO modificar sin aprobación)
+└── index.css             # CSS custom properties (paleta Lucien, NO modificar sin aprobación)
 ```
 
 ---
@@ -103,13 +102,16 @@ src/
 
 Todos los tokens están definidos como CSS custom properties en `src/index.css` y mapeados a clases de Tailwind en `tailwind.config.ts`. **Siempre usar la clase de Tailwind**, nunca el valor hex directo.
 
-El sistema usa **dos temas**: Dark Mode (Paleta Lucien, default) y Light Mode (Paleta Gdes navy/blue). El toggle está en el header (`data-testid="theme-toggle"`); el estado persiste en localStorage via `themeStore`.
+El sistema es **dark-only** (Paleta Lucien, azul/violeta profundo). El tema claro Gdes
+y su toggle (`themeStore`, botón Sun/Moon en el header) existieron hasta mayo 2026 y
+fueron eliminados el 2026-07-20 (fase 1 del rediseño frontend) — no hay alternancia de
+tema en la aplicación.
 
 ---
 
-### 4.1. Colores — Modo Oscuro / Dark (`:root`, **default**)
+### 4.1. Colores (`:root`)
 
-> **Paleta Lucien** — azul/violeta profundo. Aplicado por defecto sin clase adicional.
+> **Paleta Lucien** — azul/violeta profundo. Único tema del sistema.
 
 #### Fondos y Superficies
 
@@ -163,60 +165,14 @@ El sistema usa **dos temas**: Dark Mode (Paleta Lucien, default) y Light Mode (P
 
 ---
 
-### 4.2. Colores — Modo Claro / Light (`html.light`)
+### 4.2. (Reservado)
 
-> **Paleta Gdes navy/blue** — azul institucional, fondo claro. Activado con clase `html.light`.
-
-#### Fondos y Superficies
-
-| Token CSS | Clase Tailwind | Valor Hex | Uso |
-|---|---|---|---|
-| `--background` | `bg-background` | `#f4f7fb` | Fondo general |
-| `--card` | `bg-card` | `#ffffff` | Tarjetas, paneles |
-| `--popover` | `bg-popover` | `#ffffff` | Popovers, dropdowns |
-| `--muted` | `bg-muted` | `#e8f1fb` | Fondos secundarios |
-| `--accent` | `bg-accent` | `#e8f1fb` | Hover general |
-| `--secondary` | `bg-secondary` | `#e8f1fb` | Botones secundarios |
-
-#### Texto
-
-| Token CSS | Clase Tailwind | Valor Hex | Uso |
-|---|---|---|---|
-| `--foreground` | `text-foreground` | `#1a2e45` | Texto principal (navy oscuro) |
-| `--card-foreground` | `text-card-foreground` | `#1a2e45` | Texto en tarjetas |
-| `--muted-foreground` | `text-muted-foreground` | `#4a6785` | Labels, placeholders (ratio WCAG AA ✓) |
-
-#### Acción Principal
-
-| Token CSS | Clase Tailwind | Valor Hex | Uso |
-|---|---|---|---|
-| `--primary` | `bg-primary` | `#1971c2` | Botones primarios, sidebar activo |
-| `--primary-foreground` | `text-primary-foreground` | `#ffffff` | Texto sobre primary |
-| `--ring` | `ring-ring` | `#1971c2` | Anillo de focus |
-
-#### Bordes e Inputs
-
-| Token CSS | Clase Tailwind | Valor Hex | Uso |
-|---|---|---|---|
-| `--border` | `border-border` | `#d6e4f5` | Bordes estándar |
-| `--input` | `border-input` | `#d6e4f5` | Bordes de inputs |
-
-#### Topbar (light)
-
-| Token CSS | Uso |
-|---|---|
-| `--topbar-bg: #ffffff` | Fondo del header |
-| `--topbar-border: #d6e4f5` | Línea inferior del header |
-| `--topbar-pill-bg: #f4f7fb` | Fondo de pills |
-| `--topbar-pill-border: #d6e4f5` | Borde de pills |
-| `--topbar-pill-text: #1a2e45` | Texto en pills |
-| `--topbar-icon-color: #1971c2` | Color de iconos |
-| `--topbar-btn-bg: #1971c2` | Fondo del botón Facturar Global |
-| `--topbar-btn-hover: #145ea8` | Hover del botón Facturar Global |
+> El tema claro Gdes (paleta navy/blue, clase `html.light`) fue eliminado el
+> 2026-07-20 junto con su toggle. Ver §4.1 para la única paleta vigente.
 
 ---
 
-### 4.2b. Estados Semánticos (ambos temas)
+### 4.2b. Estados Semánticos
 
 | Token CSS | Clase Tailwind | Valor Hex | Uso |
 |---|---|---|---|
@@ -247,6 +203,34 @@ Definida en `tailwind.config.ts`. Usar para acentos y gradientes en dark mode:
 | `bg-danger-100` | `#4A1515` | Fondo de error (dark) |
 | `bg-danger-600` | `#DC2626` | = Destructive |
 | `bg-danger-700` | `#B91C1C` | Hover sobre destructive |
+
+#### Escala de Advertencia (`warning-*`)
+
+| Clase | Hex | Uso típico |
+|---|---|---|
+| `bg-warning-50` | `#332510` | Fondo de alerta suave (dark) |
+| `bg-warning-100` | `#4A3517` | Fondo de alerta (dark) |
+| `bg-warning-600` | `#F59E0B` | Texto/ícono de advertencia |
+| `bg-warning-700` | `#B45309` | Hover sobre advertencia |
+
+#### Escala de Éxito (`success-*`)
+
+| Clase | Hex | Uso típico |
+|---|---|---|
+| `text-success` (`DEFAULT`) | `#16A34A` | Éxito, emisión DTE OK (botón Aprobar/badge) |
+| `bg-success-50` | `#10281B` | Fondo de alerta suave (dark) |
+| `bg-success-100` | `#1A3D28` | Fondo de badge de éxito |
+| `bg-success-600` | `#22C55E` | Texto/ícono de éxito |
+
+#### Colores de Categoría (`category-*`)
+
+Usados para distinguir tipo de regla/candidato de agrupación (ej. `AdminReglas.tsx`):
+badges "Receptor" vs "Detalle". Usar con opacidad Tailwind (`/20`, `/40`) en vez de hex + alpha manual.
+
+| Clase | Hex | Uso típico |
+|---|---|---|
+| `text-category-receptor` | `#60A5FA` | Badge "Receptor" (campo del receptor) |
+| `text-category-detalle` | `#A78BFA` | Badge "Detalle" (línea de detalle) |
 
 ---
 
@@ -491,45 +475,62 @@ Si se necesita alguno de estos, crearlo en `src/components/ui/` siguiendo el pat
 
 ### 6.2. Sidebar
 
-El sidebar **no es colapsable** en esta aplicación. Ancho fijo `w-56` (`224px`).
+El sidebar **es colapsable** (`useState` local en `Sidebar.tsx`), alternando entre
+`w-64` (expandido) y `w-20` (colapsado), con un botón `ChevronLeft`/`ChevronRight`
+flotante en el borde derecho.
 
 ```tsx
-<aside className="w-56 bg-slate-900 flex flex-col h-screen">
+<aside className={cn('relative bg-slate-900 flex flex-col shrink-0 transition-all duration-300', collapsed ? 'w-20' : 'w-64')}>
 
-  {/* Logo/brand */}
-  <div className="px-4 py-5 border-b border-slate-700">
-    <span className="text-white font-bold text-lg">facturaGdes</span>
+  {/* Brand */}
+  <div className="px-4 py-6 border-b border-border flex items-center">
+    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+      <span className="text-primary-foreground font-bold text-xl">G</span>
+    </div>
+    {!collapsed && (
+      <div className="min-w-0">
+        <span className="text-foreground font-semibold text-base leading-tight block truncate">GDE Sistema</span>
+        <span className="text-muted-foreground text-xs uppercase tracking-wide">Gestión de Guías</span>
+      </div>
+    )}
   </div>
 
+  {/* Toggle button */}
+  <Button variant="outline" size="icon" onClick={() => setCollapsed(!collapsed)}
+    className="absolute -right-3 top-7 h-6 w-6 rounded-full shadow-sm border-border p-0 text-muted-foreground hover:text-foreground">
+    {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
+  </Button>
+
   {/* Navegación con NavLink */}
-  <nav className="flex-1 px-2 py-4 space-y-1">
+  <nav className="flex-1 px-3 py-4">
     <NavLink
       to="/clientes"
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors
-        ${isActive
-          ? 'bg-primary/20 text-white'         // activo: tinte primary
-          : 'text-slate-400 hover:text-white hover:bg-slate-800'  // inactivo
-        }`
+        cn('flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
+          isActive
+            ? 'bg-primary/20 text-primary border-l-2 border-primary pl-[10px]'
+            : 'text-slate-400 hover:bg-white/5 hover:text-white')
       }
     >
-      <Users className="w-4 h-4" />
+      <Users size={16} />
       Clientes
     </NavLink>
-    {/* … más NavLinks … */}
+    {/* … NavLink de Guías … */}
   </nav>
 </aside>
 ```
 
 **Reglas:**
-- Sidebar: `bg-slate-900` fijo — no cambia entre temas dark/light.
-- Link activo: `bg-primary/20 text-white`.
-- Link inactivo: `text-slate-400 hover:text-white hover:bg-slate-800`.
+- Sidebar: `bg-slate-900` fijo — no cambia con el estado colapsado/expandido.
+- Link activo: `bg-primary/20 text-primary border-l-2 border-primary`.
+- Link inactivo: `text-slate-400 hover:bg-white/5 hover:text-white`.
 - Ítem `/preview` solo visible cuando `seleccionActiva.length > 0`.
+- El botón de toggle usa `variant="outline"` de `<Button>` (que ya provee `bg-card`) — no agregar `style`/hex de fondo adicional.
+- Solo dos entradas activas hoy: `Clientes` y `Guías`. `/admin/reglas` queda fuera de la navegación (comentado en el código) — ver §"Fuera de Alcance" en `CLAUDE.md`.
 
 ### 6.3. Header / Topbar
 
-El header usa CSS custom properties de topbar para adaptarse al tema activo.
+El header usa CSS custom properties de topbar (`--topbar-*`, definidas en `index.css`).
 
 ```tsx
 <header
@@ -562,18 +563,14 @@ El header usa CSS custom properties de topbar para adaptarse al tema activo.
   >
     Facturar Global
   </button>
-
-  {/* Toggle dark/light */}
-  <button data-testid="theme-toggle" onClick={toggleTheme}>
-    {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-  </button>
 </header>
 ```
 
 **Reglas:**
-- Usar `var(--topbar-*)` para que el header se adapte a dark/light sin clases extra.
+- Usar `var(--topbar-*)` en vez de hex hardcodeados en el header.
 - El título de vista viene del mapa `PAGE_META` en `AppLayout.tsx` (no usar `<h1>`).
 - **Facturar Global** dual: una instancia en el header (siempre visible) + otra entre tabs de período en Vista Clientes.
+- No hay toggle de tema en el header — fue eliminado (ver §4.1).
 
 ### 6.4. Tarjetas (Card-Based Layout)
 
@@ -908,8 +905,7 @@ Antes de considerar terminado cualquier cambio visual:
 - [ ] Los elementos interactivos tienen estados hover/focus/disabled
 - [ ] Inputs tienen labels o `aria-label`
 - [ ] El sidebar funciona colapsado y expandido
-- [ ] Si usas el tema institucional: la paleta azul primary se respeta
-- [ ] Si usas el tema Carbón & Cobre: los tokens de `.theme-carbon` se respetan y no hay colores hardcodeados
+- [ ] Se respeta la paleta institucional (Lucien) — sin hex hardcodeados fuera de tokens
 - [ ] No se modificó ningún hook, servicio, ni lógica de negocio
 - [ ] Se verificó con las skills `frontend-design`, `web-design-guidelines`, `ui-ux-pro-max` y `vercel-react-best-practices`
 - [ ] Compila sin errores TypeScript
@@ -946,57 +942,18 @@ Antes de considerar terminado cualquier cambio visual:
 
 ---
 
-## 18. Sistema Dual de Temas (Dark Lucien ↔ Light Gdes)
+## 18. Historial: Eliminación del Tema Claro (2026-07-20)
 
-> **Estado:** Implementado y estable — Mayo 2026
+> El sistema tuvo un tema dual (Dark Lucien ↔ Light Gdes) con toggle persistido en
+> `localStorage` vía `themeStore` (Zustand) hasta mayo 2026. La fase 1 del rediseño
+> frontend (2026-07-20) eliminó `src/store/themeStore.ts`, el botón toggle Sun/Moon
+> del header, la clase `html.light` y sus reglas en `index.css`. El sistema es
+> **dark-only** desde entonces — ver §4.1 para la paleta vigente.
 
-El toggle está en el header (`data-testid="theme-toggle"`). El estado persiste en `localStorage` via `themeStore` (Zustand). La clase `html.light` activa la paleta Gdes; sin ella, rige la paleta Lucien (dark).
+### Contraste validado (WCAG AA) — paleta única
 
-### Implementación del toggle
-
-```tsx
-// src/store/themeStore.ts
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-
-type Theme = 'dark' | 'light'
-
-interface ThemeStore {
-  theme: Theme
-  toggleTheme: () => void
-}
-
-export const useThemeStore = create<ThemeStore>()(
-  persist(
-    (set, get) => ({
-      theme: 'dark',
-      toggleTheme: () => {
-        const next = get().theme === 'dark' ? 'light' : 'dark'
-        document.documentElement.classList.toggle('light', next === 'light')
-        set({ theme: next })
-      },
-    }),
-    { name: 'facturaGdes-theme' }
-  )
-)
-```
-
-### Contraste validado (WCAG AA)
-
-| Par | Dark (Lucien) | Light (Gdes) | Ratio |
-|---|---|---|---|
-| foreground / background | `#fff` / `#080d2c` | `#1a2e45` / `#f4f7fb` | ≥ 7:1 ✓ |
-| muted-foreground / card | `#8a94c4` / `#13183a` | `#4a6785` / `#ffffff` | ≥ 4.5:1 ✓ |
-| primary / background | `#505daa` / `#080d2c` | `#1971c2` / `#f4f7fb` | ≥ 4.5:1 ✓ |
-
-> **Ajuste de contraste aplicado (2026-05-11):**
-> `--muted-foreground` dark era `#8A8480` (ratio bajo) → corregido a `#A09C98`.
-> `--muted-foreground` light era `#6b87a8` (ratio bajo) → corregido a `#4a6785`.
-
-### Checklist del sistema de temas
-
-- [ ] Usar `bg-background`, `text-foreground` — nunca hex hardcodeados
-- [ ] Usar `var(--topbar-*)` en header para que adapte en ambos temas
-- [ ] Sidebar usa `bg-slate-900` (fijo, no cambia entre temas)
-- [ ] El toggle Sun/Moon funciona y persiste al recargar
-- [ ] Contraste cumple WCAG AA en ambos temas
+| Par | Dark (Lucien) | Ratio |
+|---|---|---|
+| foreground / background | `#fff` / `#080d2c` | ≥ 7:1 ✓ |
+| muted-foreground / card | `#9aa4d4` / `#13183a` | ≥ 4.5:1 ✓ |
+| primary / background | `#505daa` / `#080d2c` | ≥ 4.5:1 ✓ |
