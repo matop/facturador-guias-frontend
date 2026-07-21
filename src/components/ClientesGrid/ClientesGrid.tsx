@@ -10,6 +10,7 @@ const clpFormatter = new Intl.NumberFormat('es-CL', {
 interface ClientesGridProps {
   clientes: Cliente[]
   loading: boolean
+  hasQuery: boolean
   onVerGuias: (id: string) => void
   onFacturar: (id: string) => void
   onGestionarRegla: (rut: string) => void
@@ -33,6 +34,7 @@ function SkeletonRow() {
 export function ClientesGrid({
   clientes,
   loading,
+  hasQuery,
   onVerGuias,
   onFacturar,
   onGestionarRegla,
@@ -61,7 +63,7 @@ export function ClientesGrid({
   if (clientes.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        No hay clientes para este período.
+        {hasQuery ? 'Ningún cliente coincide con la búsqueda.' : 'No hay clientes para este período.'}
       </div>
     )
   }

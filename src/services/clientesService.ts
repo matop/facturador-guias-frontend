@@ -81,7 +81,7 @@ export function assignReglaCliente(
   const { empkey } = getContext()
   return backendFetch(`/empresas/${empkey}/clientes/${rut}/regla`, {
     method: 'PUT',
-    body: { reglaidl, ...opciones },
+    body: { reglaIdl: reglaidl, ...opciones },
   })
 }
 
