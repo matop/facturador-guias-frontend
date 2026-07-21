@@ -62,9 +62,9 @@ describe('Guias page', () => {
 
   // ── Layout inicial ────────────────────────────────────────────────────────
 
-  it('renders page title when no client is selected', () => {
+  it('does NOT render breadcrumb when no client is selected', () => {
     renderPage()
-    expect(screen.getByText('Guías de Despacho')).toBeInTheDocument()
+    expect(screen.queryByTestId('breadcrumb')).not.toBeInTheDocument()
   })
 
   it('shows search input, date-filter and filtro-cliente', () => {
@@ -191,10 +191,9 @@ describe('Guias page', () => {
     const breadcrumb = screen.getByTestId('breadcrumb')
     expect(within(breadcrumb).getByText('Constructora Aconcagua S.A.')).toBeInTheDocument()
     expect(within(breadcrumb).getByText('76.543.210-K')).toBeInTheDocument()
-    expect(screen.queryByText('Guías de Despacho')).not.toBeInTheDocument()
   })
 
-  it('clicking breadcrumb "Clientes" resets client filter and restores title', async () => {
+  it('clicking breadcrumb "Clientes" resets client filter and removes breadcrumb', async () => {
     const user = userEvent.setup()
     renderPage()
 
@@ -211,7 +210,7 @@ describe('Guias page', () => {
     await user.click(screen.getByRole('button', { name: /clientes/i }))
 
     await waitFor(() => {
-      expect(screen.getByText('Guías de Despacho')).toBeInTheDocument()
+      expect(screen.queryByTestId('breadcrumb')).not.toBeInTheDocument()
     })
     expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).value).toBe('')
   })
@@ -230,7 +229,7 @@ describe('Guias page', () => {
     expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).value).toBe('c1')
   })
 
-  it('clearing cliente dropdown restores page title', async () => {
+  it('clearing cliente dropdown removes breadcrumb', async () => {
     const user = userEvent.setup()
     renderPage()
 
@@ -242,7 +241,7 @@ describe('Guias page', () => {
     await user.selectOptions(screen.getByTestId('filtro-cliente'), '')
 
     await waitFor(() => {
-      expect(screen.getByText('Guías de Despacho')).toBeInTheDocument()
+      expect(screen.queryByTestId('breadcrumb')).not.toBeInTheDocument()
     })
   })
 
