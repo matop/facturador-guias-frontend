@@ -1,4 +1,4 @@
-import type { Cliente, MetricasResumen } from '@/types'
+import type { Cliente, MetricasResumen, ReglaCliente } from '@/types'
 import { backendFetch, getContext, periodoToYYYYMM } from './http'
 import { usePeriodoStore } from '@/store/periodoStore'
 
