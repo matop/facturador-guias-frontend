@@ -51,7 +51,7 @@ describe('ClientesGrid', () => {
   it('formatea monto neto en CLP', () => {
     render(<ClientesGrid {...defaultProps} />)
     const rows = screen.getAllByRole('row')
-    expect(rows[1].textContent).toMatch(/10[\.,]450[\.,]000/)
+    expect(rows[1].textContent).toMatch(/10[.,]450[.,]000/)
   })
 
   it('llama onVerGuias con id al click en Ver Guías', async () => {
