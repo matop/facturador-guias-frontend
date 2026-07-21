@@ -12,9 +12,9 @@ vi.mock('@/services/api', () => ({
 }))
 
 const mockGuias: Guia[] = [
-  { id: 'g1', numero: '4401', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-05-03', descripcion: 'Hormigón premezclado', cantidad: 1, montoNeto: 1290000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', estado: 'pendiente' },
-  { id: 'g2', numero: '4402', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-05-05', descripcion: 'Fierro galvanizado', cantidad: 24, montoNeto: 480000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', estado: 'pendiente' },
-  { id: 'g3', numero: '4403', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-05-07', descripcion: 'Cemento Portland', cantidad: 50, montoNeto: 750000, agrupadorId: 'a2', agrupadorCodigo: 'OC 0002', agrupadorColor: '#dcfce7', estado: 'pendiente' },
+  { id: 'g1', numero: '4401', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-05-03', descripcion: 'Hormigón premezclado', cantidad: 1, montoNeto: 1290000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', agrupadorNombre: null, estado: 'pendiente' },
+  { id: 'g2', numero: '4402', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-05-05', descripcion: 'Fierro galvanizado', cantidad: 24, montoNeto: 480000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', agrupadorNombre: null, estado: 'pendiente' },
+  { id: 'g3', numero: '4403', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-05-07', descripcion: 'Cemento Portland', cantidad: 50, montoNeto: 750000, agrupadorId: 'a2', agrupadorCodigo: 'OC 0002', agrupadorColor: '#dcfce7', agrupadorNombre: null, estado: 'pendiente' },
 ]
 
 describe('Preview page', () => {

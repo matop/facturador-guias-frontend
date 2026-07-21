@@ -29,8 +29,8 @@ vi.mock('@/services/api', () => ({
 }))
 
 const mockClientes: Cliente[] = [
-  { id: 'c1', nombre: 'Constructora Aconcagua S.A.', rut: '76.543.210-K', guiasPendientes: 14, factEst: 3, montoNeto: 10450000 },
-  { id: 'c2', nombre: 'Minera del Norte Ltda.', rut: '96.123.456-2', guiasPendientes: 9, factEst: 2, montoNeto: 7120000 },
+  { id: 'c1', nombre: 'Constructora Aconcagua S.A.', rut: '76.543.210-K', guiasPendientes: 14, factEst: 3, montoNeto: 10450000, reglaIdl: null },
+  { id: 'c2', nombre: 'Minera del Norte Ltda.', rut: '96.123.456-2', guiasPendientes: 9, factEst: 2, montoNeto: 7120000, reglaIdl: null },
 ]
 
 const mockGuias: Guia[] = [
@@ -304,6 +304,7 @@ describe('Guias page', () => {
       agrupadorId: `ax${i}`,
       agrupadorCodigo: `ZONA-${i}`,
       agrupadorColor: '#dbeafe',
+      agrupadorNombre: null,
       estado: 'pendiente' as const,
     }))
     const api = await import('@/services/api')
@@ -326,6 +327,7 @@ describe('Guias page', () => {
       agrupadorId: `ax${i}`,
       agrupadorCodigo: i < 4 ? `NORTE-${i}` : `SUR-${i}`,
       agrupadorColor: '#dbeafe',
+      agrupadorNombre: null,
       estado: 'pendiente' as const,
     }))
     const api = await import('@/services/api')
@@ -353,6 +355,7 @@ describe('Guias page', () => {
       agrupadorId: `ay${i}`,
       agrupadorCodigo: `GRP-${i}`,
       agrupadorColor: '#dbeafe',
+      agrupadorNombre: null,
       estado: 'pendiente' as const,
     }))
     const api = await import('@/services/api')

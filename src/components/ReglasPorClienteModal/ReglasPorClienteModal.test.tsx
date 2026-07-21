@@ -43,6 +43,7 @@ const defaultProps = {
   activando: null as string | null,
   onActivar: vi.fn(),
   onClose: vi.fn(),
+  onRenombrar: vi.fn(),
 }
 
 function renderModal(props = {}) {
@@ -52,6 +53,7 @@ function renderModal(props = {}) {
 beforeEach(() => {
   defaultProps.onActivar = vi.fn()
   defaultProps.onClose = vi.fn()
+  defaultProps.onRenombrar = vi.fn()
 })
 
 describe('ReglasPorClienteModal', () => {
