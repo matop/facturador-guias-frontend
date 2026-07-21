@@ -131,6 +131,7 @@ export default function Clientes() {
         <ClientesGrid
           clientes={clientes}
           loading={loading}
+          hasQuery={query.trim().length > 0}
           onVerGuias={(id) => navigate(`/guias?clienteId=${id}`)}
           onFacturar={(id) => navigate(`/guias?clienteId=${id}`)}
           onGestionarRegla={(rut) => setPopupRut(rut)}

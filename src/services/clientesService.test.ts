@@ -50,7 +50,7 @@ describe('assignReglaCliente', () => {
     await assignReglaCliente('76543210-K', 'regla_A')
     expect(http.backendFetch).toHaveBeenCalledWith(
       '/empresas/977/clientes/76543210-K/regla',
-      { method: 'PUT', body: { reglaidl: 'regla_A' } },
+      { method: 'PUT', body: { reglaIdl: 'regla_A' } },
     )
   })
 
@@ -59,7 +59,7 @@ describe('assignReglaCliente', () => {
     await assignReglaCliente('76543210-K', 'regla_B', { recomputar: true, periodo: '2026-05' })
     expect(http.backendFetch).toHaveBeenCalledWith(
       '/empresas/977/clientes/76543210-K/regla',
-      { method: 'PUT', body: { reglaidl: 'regla_B', recomputar: true, periodo: '2026-05' } },
+      { method: 'PUT', body: { reglaIdl: 'regla_B', recomputar: true, periodo: '2026-05' } },
     )
   })
 
@@ -68,7 +68,7 @@ describe('assignReglaCliente', () => {
     await assignReglaCliente('76543210-K', 'regla_B', { recomputar: false })
     expect(http.backendFetch).toHaveBeenCalledWith(
       '/empresas/977/clientes/76543210-K/regla',
-      { method: 'PUT', body: { reglaidl: 'regla_B', recomputar: false } },
+      { method: 'PUT', body: { reglaIdl: 'regla_B', recomputar: false } },
     )
   })
 })

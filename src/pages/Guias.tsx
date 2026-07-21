@@ -71,6 +71,10 @@ export default function GuiasPage() {
     loadGuias()
   }, [loadGuias])
 
+  useEffect(() => {
+    useSeleccionStore.getState().limpiar()
+  }, [filtroCliente])
+
   const selectedIds = useMemo(
     () => new Set(seleccionActiva.map((g) => g.id)),
     [seleccionActiva],
@@ -350,6 +354,8 @@ export default function GuiasPage() {
         />
       </div>
 
+      {seleccionActiva.length > 0 && <div data-testid="bulk-bar-spacer" style={{ height: 96 }} />}
+
       {/* Bulk bar — flotante centrado cuando hay selección, estilo mockup */}
       <div
         className="fixed bottom-7 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3.5 px-5 py-3 rounded-xl transition-all duration-300"
@@ -363,7 +369,7 @@ export default function GuiasPage() {
         }}
       >
         <span className="text-sm font-semibold text-white">
-          <span className="text-blue-300 font-mono">{seleccionActiva.length}</span> guías seleccionadas
+          <span className="text-blue-300 font-mono">{seleccionActiva.length}</span> guía{seleccionActiva.length !== 1 ? 's' : ''} seleccionada{seleccionActiva.length !== 1 ? 's' : ''}
         </span>
         <span className="text-blue-300 font-mono text-sm">{fmtMonto(montoSeleccion)}</span>
         <div className="w-px h-5 bg-white/20" />
@@ -394,8 +400,8 @@ export default function GuiasPage() {
       <ConfirmDialog
         open={dialogOpen}
         titulo="Confirmar facturación"
-        subtitulo={`Se procesarán ${seleccionActiva.length} guía${seleccionActiva.length !== 1 ? 's' : ''} seleccionadas para facturación.`}
-        warning="Esta acción generará facturas electrónicas. Las guías procesadas <strong>no podrán ser revertidas</strong> una vez enviadas al SII."
+        subtitulo={`Se procesarán ${seleccionActiva.length} guía${seleccionActiva.length !== 1 ? 's' : ''} seleccionada${seleccionActiva.length !== 1 ? 's' : ''} para facturación.`}
+        warning="Se generará una proforma en memoria para revisar antes de confirmar el envío a facturación. Nada se emite al SII en este paso."
         summary={dialogSummary}
         confirmLabel="Confirmar emisión"
         onConfirm={handleConfirm}

@@ -246,6 +246,28 @@ describe('Guias page', () => {
     })
   })
 
+  it('changing filtro-cliente clears an active selection (no cross-cliente selección fantasma)', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    useSeleccionStore.getState().agregar(mockGuias[0])
+
+    await waitFor(() => {
+      expect(screen.getByTestId('btn-facturar-seleccion')).not.toBeDisabled()
+    })
+
+    await waitFor(() => {
+      expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).options.length).toBeGreaterThan(1)
+    })
+
+    await user.selectOptions(screen.getByTestId('filtro-cliente'), 'c2')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('btn-facturar-seleccion')).toBeDisabled()
+    })
+    expect(useSeleccionStore.getState().seleccionActiva).toHaveLength(0)
+  })
+
   // ── Facturar Selección ────────────────────────────────────────────────────
 
   it('"Facturar Selección" button is disabled when nothing is selected', () => {
