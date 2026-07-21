@@ -127,11 +127,6 @@ export default function GuiasPage() {
   return (
     <div data-testid="guias-page" className="space-y-4">
 
-      {/* Título de la vista — oculto cuando hay breadcrumb activo */}
-      {!clienteActivo && (
-        <h1 className="text-xl font-semibold text-foreground">Guías de Despacho</h1>
-      )}
-
       {/* Breadcrumb cuando hay cliente activo */}
       {clienteActivo && (
         <div data-testid="breadcrumb" className="flex items-center gap-2 text-sm">
