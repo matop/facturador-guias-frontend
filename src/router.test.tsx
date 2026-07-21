@@ -29,7 +29,7 @@ describe('AppRouter', () => {
 
   it('renders Guías page at /guias', () => {
     renderRouter('/guias')
-    expect(screen.getByRole('heading', { name: /guías/i })).toBeInTheDocument()
+    expect(screen.getByTestId('guias-page')).toBeInTheDocument()
   })
 
   it('redirects / to /clientes', () => {
