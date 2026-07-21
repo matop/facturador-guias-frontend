@@ -77,9 +77,15 @@ describe('Guias page', () => {
     expect(screen.getByText('Guías de Despacho')).toBeInTheDocument()
   })
 
-  it('shows search input, date-filter and filtro-cliente', () => {
+  it('shows search input always visible; date-filter and filtro-cliente after expanding filtros', async () => {
+    const user = userEvent.setup()
     renderPage()
     expect(screen.getByPlaceholderText(/buscar por n° guía/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('date-filter')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('filtro-cliente')).not.toBeInTheDocument()
+
+    await user.click(screen.getByTestId('toggle-filtros'))
+
     expect(screen.getByTestId('date-filter')).toBeInTheDocument()
     expect(screen.getByTestId('filtro-cliente')).toBeInTheDocument()
   })
@@ -110,7 +116,9 @@ describe('Guias page', () => {
   })
 
   it('pre-fills filtroCliente from URL ?clienteId param', async () => {
+    const user = userEvent.setup()
     renderPage(['/guias?clienteId=c1'])
+    await user.click(screen.getByTestId('toggle-filtros'))
     await waitFor(() => {
       expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).value).toBe('c1')
     })
@@ -138,7 +146,9 @@ describe('Guias page', () => {
   // ── Agrupador chips ────────────────────────────────────────────────────────
 
   it('renders agrupador chips after guías load', async () => {
+    const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
     await waitFor(() => {
       expect(screen.getByTestId('agrupador-chips')).toBeInTheDocument()
     })
@@ -150,6 +160,7 @@ describe('Guias page', () => {
   it('clicking agrupador chip filters grid to only that agrupador', async () => {
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
 
     await waitFor(() => {
       expect(screen.getByTestId('chip-agrupador-a1')).toBeInTheDocument()
@@ -168,6 +179,7 @@ describe('Guias page', () => {
   it('clicking active chip again deselects it and shows all guías', async () => {
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
 
     await waitFor(() => {
       expect(screen.getByTestId('chip-agrupador-a1')).toBeInTheDocument()
@@ -188,6 +200,7 @@ describe('Guias page', () => {
   it('shows breadcrumb with client name and RUT when client is selected', async () => {
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
 
     await waitFor(() => {
       expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).options.length).toBeGreaterThan(1)
@@ -207,6 +220,7 @@ describe('Guias page', () => {
   it('clicking breadcrumb "Clientes" resets client filter and restores title', async () => {
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
 
     await waitFor(() => {
       expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).options.length).toBeGreaterThan(1)
@@ -231,6 +245,7 @@ describe('Guias page', () => {
   it('selecting cliente updates dropdown value', async () => {
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
 
     await waitFor(() => {
       expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).options.length).toBeGreaterThan(1)
@@ -243,6 +258,7 @@ describe('Guias page', () => {
   it('clearing cliente dropdown restores page title', async () => {
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
 
     await waitFor(() => {
       expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).options.length).toBeGreaterThan(1)
@@ -259,6 +275,7 @@ describe('Guias page', () => {
   it('changing filtro-cliente clears an active selection (no cross-cliente selección fantasma)', async () => {
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
 
     useSeleccionStore.getState().agregar(mockGuias[0])
 
@@ -341,7 +358,9 @@ describe('Guias page', () => {
     }))
     const api = await import('@/services/api')
     vi.mocked(api.fetchGuias).mockResolvedValue(guiasWith8Agrupadores)
+    const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
     await waitFor(() => expect(screen.getByTestId('agrupador-combobox')).toBeInTheDocument())
     expect(screen.queryByTestId('chip-agrupador-ax0')).not.toBeInTheDocument()
   })
@@ -366,6 +385,7 @@ describe('Guias page', () => {
     vi.mocked(api.fetchGuias).mockResolvedValue(guiasWith8Agrupadores)
     const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
     await waitFor(() => expect(screen.getByTestId('combobox-agrupador-busqueda')).toBeInTheDocument())
     await user.type(screen.getByTestId('combobox-agrupador-busqueda'), 'NORTE')
     const select = screen.getByTestId('combobox-agrupador-select') as HTMLSelectElement
@@ -392,7 +412,9 @@ describe('Guias page', () => {
     }))
     const api = await import('@/services/api')
     vi.mocked(api.fetchGuias).mockResolvedValue(guiasWith7)
+    const user = userEvent.setup()
     renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
     await waitFor(() => expect(screen.getByTestId('chip-agrupador-ay0')).toBeInTheDocument())
     expect(screen.queryByTestId('agrupador-combobox')).not.toBeInTheDocument()
   })
