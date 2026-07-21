@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
@@ -42,12 +42,22 @@ const mockGuias: Guia[] = [
 
 describe('Guias page', () => {
   beforeEach(async () => {
+    // Las guías de prueba están fechadas en junio 2026: fijamos el reloj ahí para
+    // que "Mes Actual" (calculado con Date real en DateFilter) siempre las incluya,
+    // sin importar en qué fecha real corra la suite.
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-06-15T12:00:00'))
+
     useSeleccionStore.setState({ seleccionActiva: [] })
     usePeriodoStore.setState({ periodo: 'actual' })
     useTenantStore.setState({ tenantId: 'tenant-test', tenantNombre: 'Test' })
     const api = await import('@/services/api')
     vi.mocked(api.fetchGuias).mockResolvedValue(mockGuias)
     vi.mocked(api.fetchClientes).mockResolvedValue(mockClientes)
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   const renderPage = (initialEntries = ['/guias']) =>
