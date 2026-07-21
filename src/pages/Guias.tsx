@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Search, FileText, Tag, Receipt, ArrowLeft, X } from 'lucide-react'
+import { Search, FileText, Tag, Receipt, ArrowLeft, X, ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react'
 import { GuiasGrid } from '@/components/GuiasGrid'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { ErrorBanner } from '@/components/ErrorBanner/ErrorBanner'
@@ -32,6 +32,7 @@ export default function GuiasPage() {
   const [guiasError, setGuiasError] = useState<Error | null>(null)
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [filtrosAbiertos, setFiltrosAbiertos] = useState(false)
 
   const {
     busqueda, setBusqueda,
@@ -211,7 +212,7 @@ export default function GuiasPage() {
       {/* Panel de filtros unificado */}
       <div className="bg-card border border-border rounded-xl divide-y divide-border">
 
-        {/* Búsqueda */}
+        {/* Búsqueda — siempre visible */}
         <div className="px-4 py-3 relative">
           <Search className="absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           <input
@@ -223,124 +224,143 @@ export default function GuiasPage() {
           />
         </div>
 
-        {/* Fecha */}
-        <div className="px-4 py-3">
-          <DateFilter onChange={setDateRange} />
+        {/* Toggle Filtros */}
+        <div className="px-4 py-2">
+          <button
+            type="button"
+            data-testid="toggle-filtros"
+            onClick={() => setFiltrosAbiertos((v) => !v)}
+            aria-expanded={filtrosAbiertos}
+            className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
+            Filtros
+            {filtrosAbiertos ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
         </div>
 
-        {/* Cliente → Agrupador */}
-        <div className="px-4 py-3 flex flex-col gap-3">
-          {/* Fila cliente */}
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider w-20 shrink-0">
-              Cliente
-            </span>
-            <select
-              data-testid="filtro-cliente"
-              value={filtroCliente}
-              onChange={(e) => setFiltroCliente(e.target.value)}
-              className="border border-input rounded-lg px-3 py-1.5 text-sm bg-background text-foreground flex-1 focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="">Todos los clientes</option>
-              {clientes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
+        {filtrosAbiertos && (
+          <>
+            {/* Fecha */}
+            <div className="px-4 py-3">
+              <DateFilter onChange={setDateRange} />
+            </div>
 
-          {/* Fila agrupador — chips (< 8) o combobox (>= 8) */}
-          {agrupadores.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap" data-testid="agrupador-chips">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider w-20 shrink-0">
-                Agrupador
-              </span>
+            {/* Cliente → Agrupador */}
+            <div className="px-4 py-3 flex flex-col gap-3">
+              {/* Fila cliente */}
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider w-20 shrink-0">
+                  Cliente
+                </span>
+                <select
+                  data-testid="filtro-cliente"
+                  value={filtroCliente}
+                  onChange={(e) => setFiltroCliente(e.target.value)}
+                  className="border border-input rounded-lg px-3 py-1.5 text-sm bg-background text-foreground flex-1 focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="">Todos los clientes</option>
+                  {clientes.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              {agrupadores.length < 8 ? (
-                <>
-                  {/* Chip "Todos" */}
-                  <button
-                    onClick={() => setFiltroAgrupador('')}
-                    className={`text-xs px-3 py-1 rounded-full border font-medium transition-all ${
-                      filtroAgrupador === ''
-                        ? 'font-semibold'
-                        : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
-                    }`}
-                    style={
-                      filtroAgrupador === ''
-                        ? { backgroundColor: 'var(--primary)', color: '#fff', borderColor: 'var(--primary)' }
-                        : undefined
-                    }
-                  >
-                    Todos
-                  </button>
+              {/* Fila agrupador — chips (< 8) o combobox (>= 8) */}
+              {agrupadores.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap" data-testid="agrupador-chips">
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider w-20 shrink-0">
+                    Agrupador
+                  </span>
 
-                  {/* Chips por agrupador */}
-                  {agrupadores.map((ag) => {
-                    const isActive = filtroAgrupador === ag.id
-                    const chipText = getChipTextColor(ag.color)
-                    return (
+                  {agrupadores.length < 8 ? (
+                    <>
+                      {/* Chip "Todos" */}
                       <button
-                        key={ag.id}
-                        data-testid={`chip-agrupador-${ag.id}`}
-                        onClick={() => setFiltroAgrupador(isActive ? '' : ag.id)}
-                        className="text-xs px-3 py-1 rounded-full border font-medium transition-all font-mono tracking-wide"
+                        onClick={() => setFiltroAgrupador('')}
+                        className={`text-xs px-3 py-1 rounded-full border font-medium transition-all ${
+                          filtroAgrupador === ''
+                            ? 'font-semibold'
+                            : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'
+                        }`}
                         style={
-                          isActive
-                            ? {
-                                backgroundColor: ag.color,
-                                color: chipText,
-                                borderColor: ag.color,
-                                boxShadow: `0 0 0 2px ${ag.color}55`,
-                              }
-                            : {
-                                backgroundColor: ag.color + '22',
-                                color: ag.color,
-                                borderColor: ag.color + '66',
-                              }
+                          filtroAgrupador === ''
+                            ? { backgroundColor: 'var(--primary)', color: '#fff', borderColor: 'var(--primary)' }
+                            : undefined
                         }
                       >
-                        {ag.nombre || ag.codigo}
+                        Todos
                       </button>
-                    )
-                  })}
-                </>
-              ) : (
-                /* Combobox con búsqueda para >= 8 agrupadores */
-                <div className="flex items-center gap-2 flex-1" data-testid="agrupador-combobox">
-                  <input
-                    data-testid="combobox-agrupador-busqueda"
-                    type="text"
-                    value={busquedaAgrupador}
-                    onChange={(e) => setBusquedaAgrupador(e.target.value)}
-                    placeholder="Buscar agrupador..."
-                    className="border border-input rounded-lg px-3 py-1.5 text-sm bg-background text-foreground w-40 focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
-                  <select
-                    data-testid="combobox-agrupador-select"
-                    value={filtroAgrupador}
-                    onChange={(e) => { setFiltroAgrupador(e.target.value); setBusquedaAgrupador('') }}
-                    className="border border-input rounded-lg px-3 py-1.5 text-sm bg-background text-foreground flex-1 focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    <option value="">Todos los agrupadores</option>
-                    {agrupadoresFiltrados.map((ag) => (
-                      <option key={ag.id} value={ag.id}>
-                        {ag.nombre || ag.codigo}
-                      </option>
-                    ))}
-                  </select>
+
+                      {/* Chips por agrupador */}
+                      {agrupadores.map((ag) => {
+                        const isActive = filtroAgrupador === ag.id
+                        const chipText = getChipTextColor(ag.color)
+                        return (
+                          <button
+                            key={ag.id}
+                            data-testid={`chip-agrupador-${ag.id}`}
+                            onClick={() => setFiltroAgrupador(isActive ? '' : ag.id)}
+                            className="text-xs px-3 py-1 rounded-full border font-medium transition-all font-mono tracking-wide"
+                            style={
+                              isActive
+                                ? {
+                                    backgroundColor: ag.color,
+                                    color: chipText,
+                                    borderColor: ag.color,
+                                    boxShadow: `0 0 0 2px ${ag.color}55`,
+                                  }
+                                : {
+                                    backgroundColor: ag.color + '22',
+                                    color: ag.color,
+                                    borderColor: ag.color + '66',
+                                  }
+                            }
+                          >
+                            {ag.nombre || ag.codigo}
+                          </button>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    /* Combobox con búsqueda para >= 8 agrupadores */
+                    <div className="flex items-center gap-2 flex-1" data-testid="agrupador-combobox">
+                      <input
+                        data-testid="combobox-agrupador-busqueda"
+                        type="text"
+                        value={busquedaAgrupador}
+                        onChange={(e) => setBusquedaAgrupador(e.target.value)}
+                        placeholder="Buscar agrupador..."
+                        className="border border-input rounded-lg px-3 py-1.5 text-sm bg-background text-foreground w-40 focus:outline-none focus:ring-2 focus:ring-ring"
+                      />
+                      <select
+                        data-testid="combobox-agrupador-select"
+                        value={filtroAgrupador}
+                        onChange={(e) => { setFiltroAgrupador(e.target.value); setBusquedaAgrupador('') }}
+                        className="border border-input rounded-lg px-3 py-1.5 text-sm bg-background text-foreground flex-1 focus:outline-none focus:ring-2 focus:ring-ring"
+                      >
+                        <option value="">Todos los agrupadores</option>
+                        {agrupadoresFiltrados.map((ag) => (
+                          <option key={ag.id} value={ag.id}>
+                            {ag.nombre || ag.codigo}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {filtroAgrupador && (
+                    <span className="text-xs text-muted-foreground">
+                      · {guiasFiltradas.length} guía{guiasFiltradas.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
                 </div>
               )}
-
-              {filtroAgrupador && (
-                <span className="text-xs text-muted-foreground">
-                  · {guiasFiltradas.length} guía{guiasFiltradas.length !== 1 ? 's' : ''}
-                </span>
-              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
 
       {/* Grilla de guías */}
