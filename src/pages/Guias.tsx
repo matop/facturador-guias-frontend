@@ -43,7 +43,7 @@ export default function GuiasPage() {
     guiasPreFiltradas, guiasFiltradas,
     agrupadores, agrupadoresFiltrados,
     montoTotal, montoFiltrado,
-    hasActiveFilter,
+    hasActiveFilter, filtroEsHomogeneo,
   } = useGuiasFilters(guias, searchParams.get('clienteId') ?? '')
 
   useEffect(() => {
@@ -181,26 +181,32 @@ export default function GuiasPage() {
         </div>
       )}
 
-      {/* Filter action banner — visible cuando hay filtro activo */}
+      {/* Filter action banner — barra compacta de una línea, visible cuando hay filtro activo */}
       {hasActiveFilter && !loading && (
         <div
-          className="rounded-xl p-3.5 flex items-center justify-between gap-4 bg-gradient-to-br from-primary to-lucien-700"
-          style={{ boxShadow: '0 4px 16px rgba(80,93,170,.25)' }}
+          data-testid="filtro-accion-banner"
+          className="rounded-lg px-3.5 py-2 flex items-center justify-between gap-3 bg-gradient-to-br from-primary to-lucien-700 text-sm"
         >
-          <div className="text-white text-sm font-semibold">
+          <div className="text-white font-medium truncate">
             <span className="font-mono text-blue-200">{guiasFiltradas.length}</span>
-            {' '}guías de despacho en el filtro activo
+            {' '}guía{guiasFiltradas.length !== 1 ? 's' : ''} en el filtro
             {' · '}
             <span className="font-mono text-blue-200">{fmtMonto(montoFiltrado)}</span>
-            {' '}neto
           </div>
-          <button
-            onClick={handleFacturarFiltro}
-            className="bg-white font-bold text-sm px-4 py-1.5 rounded-lg transition-colors hover:opacity-90 whitespace-nowrap shrink-0"
-            style={{ color: 'var(--primary)' }}
-          >
-            Facturar todas las guías del filtro
-          </button>
+          {filtroEsHomogeneo ? (
+            <button
+              data-testid="btn-facturar-filtro"
+              onClick={handleFacturarFiltro}
+              className="bg-white font-semibold text-xs px-3 py-1 rounded-md transition-colors hover:opacity-90 whitespace-nowrap shrink-0"
+              style={{ color: 'var(--primary)' }}
+            >
+              Facturar filtro
+            </button>
+          ) : (
+            <span data-testid="filtro-heterogeneo-hint" className="text-xs text-blue-100/80 italic whitespace-nowrap shrink-0">
+              Acota a un cliente para facturar en lote
+            </span>
+          )}
         </div>
       )}
 

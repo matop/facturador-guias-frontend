@@ -27,7 +27,19 @@ export interface GuiasFiltersResult {
   montoTotal: number
   montoFiltrado: number
   hasActiveFilter: boolean
+  filtroEsHomogeneo: boolean
   reset: () => void
+}
+
+const getMes = (fecha: string): string => fecha.slice(0, 7) // 'YYYY-MM'
+
+// Un lote es facturable de una sola vez si comparte clienteId y mes (misma
+// regla que exige seleccionStore.agregarLote para no descartarlo en silencio).
+function esLoteHomogeneo(guias: Guia[]): boolean {
+  if (guias.length === 0) return false
+  const clienteId = guias[0].clienteId
+  const mes = getMes(guias[0].fecha)
+  return guias.every((g) => g.clienteId === clienteId && getMes(g.fecha) === mes)
 }
 
 export function useGuiasFilters(guias: Guia[], initialClienteId = ''): GuiasFiltersResult {
@@ -103,6 +115,8 @@ export function useGuiasFilters(guias: Guia[], initialClienteId = ''): GuiasFilt
 
   const hasActiveFilter = !!(filtroCliente || filtroAgrupador || dateRange.from)
 
+  const filtroEsHomogeneo = useMemo(() => esLoteHomogeneo(guiasFiltradas), [guiasFiltradas])
+
   return {
     busqueda, setBusqueda,
     filtroCliente, setFiltroCliente,
@@ -113,6 +127,7 @@ export function useGuiasFilters(guias: Guia[], initialClienteId = ''): GuiasFilt
     agrupadores, agrupadoresFiltrados,
     montoTotal, montoFiltrado,
     hasActiveFilter,
+    filtroEsHomogeneo,
     reset,
   }
 }

@@ -417,4 +417,81 @@ describe('Guias page', () => {
     await waitFor(() => expect(screen.getByTestId('chip-agrupador-ay0')).toBeInTheDocument())
     expect(screen.queryByTestId('agrupador-combobox')).not.toBeInTheDocument()
   })
+
+  // ── Banner de filtro activo (issue #3) ────────────────────────────────────
+
+  it('shows the compact filter banner once filtros están abiertos (rango de mes activo por defecto)', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
+    await waitFor(() => {
+      expect(screen.getByTestId('filtro-accion-banner')).toBeInTheDocument()
+    })
+  })
+
+  it('does NOT render a clickable "Facturar filtro" button when el filtro mezcla distintos clientes (evita el no-op silencioso)', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('filtro-accion-banner')).toBeInTheDocument()
+    })
+
+    // mockGuias mezcla c1 y c2 — el filtro por defecto (solo rango de mes) es heterogéneo
+    expect(screen.queryByTestId('btn-facturar-filtro')).not.toBeInTheDocument()
+    expect(screen.getByTestId('filtro-heterogeneo-hint')).toBeInTheDocument()
+  })
+
+  it('shows an enabled "Facturar filtro" button once el filtro queda acotado a un solo cliente', async () => {
+    const api = await import('@/services/api')
+    vi.mocked(api.fetchGuias).mockImplementation((params?: Record<string, string>) =>
+      Promise.resolve(
+        params?.clienteId ? mockGuias.filter((g) => g.clienteId === params.clienteId) : mockGuias,
+      ),
+    )
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
+
+    await waitFor(() => {
+      expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).options.length).toBeGreaterThan(1)
+    })
+
+    await user.selectOptions(screen.getByTestId('filtro-cliente'), 'c1')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('btn-facturar-filtro')).toBeInTheDocument()
+    })
+    expect(screen.queryByTestId('filtro-heterogeneo-hint')).not.toBeInTheDocument()
+  })
+
+  it('clicking "Facturar filtro" agrega el lote a la selección y abre ConfirmDialog', async () => {
+    const api = await import('@/services/api')
+    vi.mocked(api.fetchGuias).mockImplementation((params?: Record<string, string>) =>
+      Promise.resolve(
+        params?.clienteId ? mockGuias.filter((g) => g.clienteId === params.clienteId) : mockGuias,
+      ),
+    )
+    const user = userEvent.setup()
+    renderPage()
+    await user.click(screen.getByTestId('toggle-filtros'))
+
+    await waitFor(() => {
+      expect((screen.getByTestId('filtro-cliente') as HTMLSelectElement).options.length).toBeGreaterThan(1)
+    })
+
+    await user.selectOptions(screen.getByTestId('filtro-cliente'), 'c1')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('btn-facturar-filtro')).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByTestId('btn-facturar-filtro'))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('confirm-dialog')).toBeInTheDocument()
+    })
+    expect(useSeleccionStore.getState().seleccionActiva.length).toBeGreaterThan(0)
+  })
 })
