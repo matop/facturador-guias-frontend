@@ -148,6 +148,7 @@ export const mockGuias: Guia[] = [
     agrupadorCodigo: 'OC 0001',
     agrupadorColor: '#dbeafe',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
   },
   {
@@ -163,6 +164,7 @@ export const mockGuias: Guia[] = [
     agrupadorCodigo: 'OC 0001',
     agrupadorColor: '#dbeafe',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
   },
   {
@@ -178,6 +180,7 @@ export const mockGuias: Guia[] = [
     agrupadorCodigo: 'OC 0002',
     agrupadorColor: '#dcfce7',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
   },
   {
@@ -193,6 +196,7 @@ export const mockGuias: Guia[] = [
     agrupadorCodigo: 'DIR Santiago Centro',
     agrupadorColor: '#fef9c3',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
   },
   // ── Abril 2026 (rezagadas) ─────────────────────────────────────────────────
@@ -209,6 +213,7 @@ export const mockGuias: Guia[] = [
     agrupadorCodigo: 'OC 0001',
     agrupadorColor: '#dbeafe',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
   },
   {
@@ -224,6 +229,7 @@ export const mockGuias: Guia[] = [
     agrupadorCodigo: 'DIR Santiago Centro',
     agrupadorColor: '#fef9c3',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
   },
   {
@@ -239,6 +245,7 @@ export const mockGuias: Guia[] = [
     agrupadorCodigo: '',
     agrupadorColor: '#e2e8f0',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
   },
 ]

@@ -55,6 +55,7 @@ export function fetchGuias(params?: Record<string, string>): Promise<Guia[]> {
               agrupadorCodigo: grupo.valorAgrupador,
               agrupadorColor:  color,
               agrupadorNombre: null,
+              reglaIdl:        grupo.reglaIdl,
               estado:          'pendiente',
             })
           }

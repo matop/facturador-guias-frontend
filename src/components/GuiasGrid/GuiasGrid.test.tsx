@@ -120,4 +120,18 @@ describe('GuiasGrid', () => {
     render(<GuiasGrid {...defaultProps} />)
     expect(screen.getByTestId('guias-grid-virtual')).toBeInTheDocument()
   })
+
+  it('shows reglaIdl badge in group header when the group has one', () => {
+    const guiasConRegla = mayoGuias.map((g) =>
+      g.agrupadorId === 'a1' ? { ...g, reglaIdl: '977_campo_receptor_CmnaRecep' } : g,
+    )
+    render(<GuiasGrid {...defaultProps} guias={guiasConRegla} />)
+    const badge = screen.getByTestId('regla-badge-a1')
+    expect(badge).toHaveTextContent('977_campo_receptor_CmnaRecep')
+  })
+
+  it('does not show reglaIdl badge when the group has no regla', () => {
+    render(<GuiasGrid {...defaultProps} />)
+    expect(screen.queryByTestId('regla-badge-a1')).not.toBeInTheDocument()
+  })
 })
