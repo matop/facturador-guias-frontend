@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import type { DateRange } from '@/components/DateFilter'
+import { esLoteHomogeneo } from '@/utils/loteHomogeneo'
 import type { Guia } from '@/types'
 
 interface Agrupador {
@@ -29,17 +30,6 @@ export interface GuiasFiltersResult {
   hasActiveFilter: boolean
   filtroEsHomogeneo: boolean
   reset: () => void
-}
-
-const getMes = (fecha: string): string => fecha.slice(0, 7) // 'YYYY-MM'
-
-// Un lote es facturable de una sola vez si comparte clienteId y mes (misma
-// regla que exige seleccionStore.agregarLote para no descartarlo en silencio).
-function esLoteHomogeneo(guias: Guia[]): boolean {
-  if (guias.length === 0) return false
-  const clienteId = guias[0].clienteId
-  const mes = getMes(guias[0].fecha)
-  return guias.every((g) => g.clienteId === clienteId && getMes(g.fecha) === mes)
 }
 
 export function useGuiasFilters(guias: Guia[], initialClienteId = ''): GuiasFiltersResult {
