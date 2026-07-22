@@ -171,6 +171,7 @@ export const glassCriptoGridVariant: GuiasGridVariant = {
   rowHeightHeader: 38,
   rowHeightData: 32,
   containerStyle: { backgroundColor: GC.bg },
+  tableClassName: 'w-full',
   TableHead,
   SkeletonRow,
   EmptyState,

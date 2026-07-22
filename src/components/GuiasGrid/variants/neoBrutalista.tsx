@@ -170,6 +170,7 @@ export const neoBrutalistaGridVariant: GuiasGridVariant = {
   rowHeightHeader: 40,
   rowHeightData: 32,
   containerStyle: { backgroundColor: NB.bg },
+  tableClassName: 'w-full',
   TableHead,
   SkeletonRow,
   EmptyState,

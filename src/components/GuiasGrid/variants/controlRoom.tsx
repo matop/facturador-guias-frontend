@@ -166,6 +166,7 @@ export const controlRoomGridVariant: GuiasGridVariant = {
   rowHeightHeader: 36,
   rowHeightData: 30,
   containerStyle: { backgroundColor: CR.bg },
+  tableClassName: 'w-full',
   TableHead,
   SkeletonRow,
   EmptyState,

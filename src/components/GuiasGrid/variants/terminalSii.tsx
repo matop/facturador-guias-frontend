@@ -180,6 +180,7 @@ export const terminalSiiGridVariant: GuiasGridVariant = {
   rowHeightHeader: 36,
   rowHeightData: 30,
   containerStyle: { backgroundColor: TS.bg },
+  tableClassName: 'w-full',
   TableHead,
   SkeletonRow,
   EmptyState,
