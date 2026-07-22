@@ -1,7 +1,6 @@
 import { create } from 'zustand'
+import { getMes, esLoteHomogeneo } from '@/utils/loteHomogeneo'
 import type { Guia } from '@/types'
-
-const getMes = (fecha: string): string => fecha.slice(0, 7) // 'YYYY-MM'
 
 interface SeleccionState {
   seleccionActiva: Guia[]
@@ -49,10 +48,7 @@ export const useSeleccionStore = create<SeleccionState>((set, get) => ({
       const clienteLote = guias[0].clienteId
       const mesLote = getMes(guias[0].fecha)
 
-      const loteHomogeneo = guias.every(
-        (g) => g.clienteId === clienteLote && getMes(g.fecha) === mesLote
-      )
-      if (!loteHomogeneo) return state
+      if (!esLoteHomogeneo(guias)) return state
 
       if (state.seleccionActiva.length > 0) {
         const clienteExistente = state.seleccionActiva[0].clienteId

@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import type { DateRange } from '@/components/DateFilter'
+import { esLoteHomogeneo } from '@/utils/loteHomogeneo'
 import type { Guia } from '@/types'
 
 interface Agrupador {
@@ -27,6 +28,7 @@ export interface GuiasFiltersResult {
   montoTotal: number
   montoFiltrado: number
   hasActiveFilter: boolean
+  filtroEsHomogeneo: boolean
   reset: () => void
 }
 
@@ -103,6 +105,8 @@ export function useGuiasFilters(guias: Guia[], initialClienteId = ''): GuiasFilt
 
   const hasActiveFilter = !!(filtroCliente || filtroAgrupador || dateRange.from)
 
+  const filtroEsHomogeneo = useMemo(() => esLoteHomogeneo(guiasFiltradas), [guiasFiltradas])
+
   return {
     busqueda, setBusqueda,
     filtroCliente, setFiltroCliente,
@@ -113,6 +117,7 @@ export function useGuiasFilters(guias: Guia[], initialClienteId = ''): GuiasFilt
     agrupadores, agrupadoresFiltrados,
     montoTotal, montoFiltrado,
     hasActiveFilter,
+    filtroEsHomogeneo,
     reset,
   }
 }

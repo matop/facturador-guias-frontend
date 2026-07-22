@@ -109,6 +109,45 @@ describe('useGuiasFilters', () => {
     expect(result.current.hasActiveFilter).toBe(true)
   })
 
+  // ── filtroEsHomogeneo ─────────────────────────────────────────────────────
+
+  it('filtroEsHomogeneo is false when guiasFiltradas mixes distintos clienteId', () => {
+    const { result } = renderHook(() => useGuiasFilters(guias))
+    // sin filtro de cliente ni agrupador: guiasFiltradas === guias, que mezcla c1 y c2
+    expect(result.current.filtroEsHomogeneo).toBe(false)
+  })
+
+  it('filtroEsHomogeneo is true when las guías ya vienen scoped a un solo cliente y mes (filtro por API)', () => {
+    // filtroCliente se aplica server-side (fetchGuias con clienteId) — el array
+    // de guías que llega al hook ya viene acotado a un solo cliente.
+    const guiasDeUnCliente = guias.filter((g) => g.clienteId === 'c1')
+    const { result } = renderHook(() => useGuiasFilters(guiasDeUnCliente))
+    expect(result.current.filtroEsHomogeneo).toBe(true)
+  })
+
+  it('filtroEsHomogeneo is true when filtroAgrupador reduce a un solo cliente y mes', () => {
+    const { result } = renderHook(() => useGuiasFilters(guias))
+    act(() => result.current.setFiltroAgrupador('a1'))
+    // g1 y g2: ambas c1, junio 2026
+    expect(result.current.filtroEsHomogeneo).toBe(true)
+  })
+
+  it('filtroEsHomogeneo is false when guiasFiltradas mixes distintos meses del mismo cliente', () => {
+    const guiasMismoClienteMesesDistintos: Guia[] = [
+      makeGuia({ id: 'h1', clienteId: 'c1', fecha: '2026-06-01' }),
+      makeGuia({ id: 'h2', clienteId: 'c1', fecha: '2026-07-01' }),
+    ]
+    const { result } = renderHook(() => useGuiasFilters(guiasMismoClienteMesesDistintos))
+    expect(result.current.filtroEsHomogeneo).toBe(false)
+  })
+
+  it('filtroEsHomogeneo is false when guiasFiltradas is empty', () => {
+    const { result } = renderHook(() => useGuiasFilters(guias))
+    act(() => result.current.setBusqueda('no-existe-ninguna-guia'))
+    expect(result.current.guiasFiltradas).toHaveLength(0)
+    expect(result.current.filtroEsHomogeneo).toBe(false)
+  })
+
   it('initialClienteId pre-fills filtroCliente', () => {
     const { result } = renderHook(() => useGuiasFilters(guias, 'c1'))
     expect(result.current.filtroCliente).toBe('c1')
