@@ -34,10 +34,10 @@ const mockClientes: Cliente[] = [
 ]
 
 const mockGuias: Guia[] = [
-  { id: 'g1', numero: '4401', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-06-03', descripcion: 'Hormigón premezclado', cantidad: 1, montoNeto: 1290000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', agrupadorNombre: null, estado: 'pendiente' },
-  { id: 'g2', numero: '4402', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-06-05', descripcion: 'Fierro galvanizado', cantidad: 24, montoNeto: 480000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', agrupadorNombre: null, estado: 'pendiente' },
-  { id: 'g3', numero: '4403', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-06-07', descripcion: 'Cemento Portland', cantidad: 50, montoNeto: 750000, agrupadorId: 'a2', agrupadorCodigo: 'OC 0002', agrupadorColor: '#dcfce7', agrupadorNombre: null, estado: 'pendiente' },
-  { id: 'g4', numero: '4404', clienteId: 'c2', clienteNombre: 'Minera del Norte Ltda.', fecha: '2026-06-04', descripcion: 'Explosivos industriales', cantidad: 10, montoNeto: 2350000, agrupadorId: 'a3', agrupadorCodigo: 'DIR Santiago Centro', agrupadorColor: '#fef9c3', agrupadorNombre: null, estado: 'pendiente' },
+  { id: 'g1', numero: '4401', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-06-03', descripcion: 'Hormigón premezclado', cantidad: 1, montoNeto: 1290000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', agrupadorNombre: null, reglaIdl: null, estado: 'pendiente' },
+  { id: 'g2', numero: '4402', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-06-05', descripcion: 'Fierro galvanizado', cantidad: 24, montoNeto: 480000, agrupadorId: 'a1', agrupadorCodigo: 'OC 0001', agrupadorColor: '#dbeafe', agrupadorNombre: null, reglaIdl: null, estado: 'pendiente' },
+  { id: 'g3', numero: '4403', clienteId: 'c1', clienteNombre: 'Constructora Aconcagua S.A.', fecha: '2026-06-07', descripcion: 'Cemento Portland', cantidad: 50, montoNeto: 750000, agrupadorId: 'a2', agrupadorCodigo: 'OC 0002', agrupadorColor: '#dcfce7', agrupadorNombre: null, reglaIdl: null, estado: 'pendiente' },
+  { id: 'g4', numero: '4404', clienteId: 'c2', clienteNombre: 'Minera del Norte Ltda.', fecha: '2026-06-04', descripcion: 'Explosivos industriales', cantidad: 10, montoNeto: 2350000, agrupadorId: 'a3', agrupadorCodigo: 'DIR Santiago Centro', agrupadorColor: '#fef9c3', agrupadorNombre: null, reglaIdl: null, estado: 'pendiente' },
 ]
 
 describe('Guias page', () => {
@@ -353,6 +353,7 @@ describe('Guias page', () => {
       agrupadorCodigo: `ZONA-${i}`,
       agrupadorColor: '#dbeafe',
       agrupadorNombre: null,
+      reglaIdl: null,
       estado: 'pendiente' as const,
     }))
     const api = await import('@/services/api')
@@ -378,6 +379,7 @@ describe('Guias page', () => {
       agrupadorCodigo: i < 4 ? `NORTE-${i}` : `SUR-${i}`,
       agrupadorColor: '#dbeafe',
       agrupadorNombre: null,
+      reglaIdl: null,
       estado: 'pendiente' as const,
     }))
     const api = await import('@/services/api')
@@ -407,6 +409,7 @@ describe('Guias page', () => {
       agrupadorCodigo: `GRP-${i}`,
       agrupadorColor: '#dbeafe',
       agrupadorNombre: null,
+      reglaIdl: null,
       estado: 'pendiente' as const,
     }))
     const api = await import('@/services/api')

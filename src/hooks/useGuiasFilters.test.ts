@@ -16,6 +16,7 @@ const makeGuia = (overrides: Partial<Guia>): Guia => ({
   agrupadorCodigo: 'OC-001',
   agrupadorColor: '#dbeafe',
   agrupadorNombre: 'Orden 001',
+  reglaIdl: null,
   estado: 'pendiente',
   ...overrides,
 })

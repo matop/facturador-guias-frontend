@@ -17,6 +17,7 @@ function crearGuia(overrides: Partial<Guia> = {}): Guia {
     agrupadorCodigo: 'OC-100',
     agrupadorColor: '#3b82f6',
     agrupadorNombre: null,
+    reglaIdl: null,
     estado: 'pendiente',
     ...overrides,
   }

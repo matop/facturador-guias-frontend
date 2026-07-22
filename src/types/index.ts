@@ -32,6 +32,7 @@ export interface Guia {
   agrupadorCodigo: string
   agrupadorColor: string
   agrupadorNombre: string | null
+  reglaIdl: string | null
   estado: 'pendiente' | 'facturada'
 }
 

@@ -21,6 +21,7 @@ interface GuiaGroup {
   agrupadorId: string
   agrupadorCodigo: string
   agrupadorColor: string
+  reglaIdl: string | null
   guias: Guia[]
   totalMonto: number
 }
@@ -41,6 +42,7 @@ function groupByAgrupador(guias: Guia[]): GuiaGroup[] {
         agrupadorId: guia.agrupadorId,
         agrupadorCodigo: guia.agrupadorCodigo,
         agrupadorColor: guia.agrupadorColor,
+        reglaIdl: guia.reglaIdl,
         guias: [guia],
         totalMonto: guia.montoNeto,
       })
@@ -104,6 +106,15 @@ function GroupHeaderRow({ group, onFacturarAgrupador }: GroupHeaderRowProps) {
             >
               {group.agrupadorCodigo}
             </span>
+            {group.reglaIdl && (
+              <span
+                data-testid={`regla-badge-${group.agrupadorId}`}
+                className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium text-muted-foreground border border-border"
+                title="Regla de agrupación"
+              >
+                {group.reglaIdl}
+              </span>
+            )}
             <span className="text-xs font-medium text-muted-foreground">
               {group.guias.length} {group.guias.length === 1 ? 'guía' : 'guías'}
               {' · '}
