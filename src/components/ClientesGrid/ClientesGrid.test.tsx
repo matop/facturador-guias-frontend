@@ -8,6 +8,7 @@ describe('ClientesGrid', () => {
   const defaultProps = {
     clientes: mockClientes,
     loading: false,
+    hasQuery: false,
     onVerGuias: vi.fn(),
     onFacturar: vi.fn(),
     onGestionarRegla: vi.fn(),
