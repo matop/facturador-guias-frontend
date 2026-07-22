@@ -493,7 +493,7 @@ flotante en el borde derecho.
     </div>
     {!collapsed && (
       <div className="min-w-0">
-        <span className="text-foreground font-semibold text-base leading-tight block truncate">GDE Sistema</span>
+        <span className="text-foreground font-semibold text-base leading-tight block truncate">Facturador de Guías</span>
         <span className="text-muted-foreground text-xs uppercase tracking-wide">Gestión de Guías</span>
       </div>
     )}
