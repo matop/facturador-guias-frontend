@@ -9,12 +9,28 @@ const clpFormatter = new Intl.NumberFormat('es-CL', {
   currency: 'CLP',
 })
 
+// PROTOTYPE (issue #13 — "Control Room") — tokens locales del concepto, no globales.
+// Ver Guias.tsx para el resto del concepto y el switcher de variantes.
+const CR = {
+  bg: '#050505',
+  surface: '#0a0a0a',
+  border: '#222222',
+  borderStrong: '#333333',
+  text: '#e5e5e5',
+  textDim: '#7a7a7a',
+  accent: '#00ff88',
+  accentFg: '#000000',
+} as const
+
+type GridVariant = 'default' | 'control-room'
+
 interface GuiasGridProps {
   guias: Guia[]
   loading: boolean
   onFacturarAgrupador: (agrupadorId: string, guias: Guia[]) => void
   selectedIds: Set<string>
   onSeleccionChange: (guia: Guia, checked: boolean) => void
+  variant?: GridVariant
 }
 
 interface GuiaGroup {
@@ -67,8 +83,32 @@ function flattenGroups(groups: GuiaGroup[]): FlatItem[] {
 const COLUMN_COUNT = 8
 const ROW_HEIGHT_HEADER = 46
 const ROW_HEIGHT_DATA = 48
+const ROW_HEIGHT_HEADER_CR = 36
+const ROW_HEIGHT_DATA_CR = 30
 
-function SkeletonRow() {
+// LED de estado — reemplaza el badge/chip pastel en el concepto "Control Room".
+function Led({ color, title }: { color: string; title?: string }) {
+  return (
+    <span
+      title={title}
+      className="inline-block w-2 h-2 rounded-full shrink-0"
+      style={{ backgroundColor: color, boxShadow: `0 0 5px ${color}, 0 0 1px ${color}` }}
+    />
+  )
+}
+
+function SkeletonRow({ variant }: { variant: GridVariant }) {
+  if (variant === 'control-room') {
+    return (
+      <tr className="animate-pulse">
+        {Array.from({ length: COLUMN_COUNT }).map((_, i) => (
+          <td key={i} style={{ padding: '6px 8px', borderBottom: `1px solid ${CR.border}` }}>
+            <div className="h-3 rounded-none" style={{ backgroundColor: CR.surface, width: i === 0 ? 12 : '70%' }} />
+          </td>
+        ))}
+      </tr>
+    )
+  }
   return (
     <tr className="animate-pulse">
       <td className="px-4 py-4"><div className="h-4 bg-muted rounded w-4" /></td>
@@ -86,10 +126,54 @@ function SkeletonRow() {
 interface GroupHeaderRowProps {
   group: GuiaGroup
   onFacturarAgrupador: () => void
+  variant: GridVariant
 }
 
-function GroupHeaderRow({ group, onFacturarAgrupador }: GroupHeaderRowProps) {
+function GroupHeaderRow({ group, onFacturarAgrupador, variant }: GroupHeaderRowProps) {
   const color = group.agrupadorColor
+
+  if (variant === 'control-room') {
+    return (
+      <tr style={{ backgroundColor: CR.surface, borderTop: `1px solid ${CR.borderStrong}`, borderBottom: `1px solid ${CR.border}` }}>
+        <td colSpan={COLUMN_COUNT} style={{ padding: '6px 8px' }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Led color={color} title={group.agrupadorCodigo} />
+              <span className="text-xs font-bold font-mono tracking-wider" style={{ color: CR.text }}>
+                {group.agrupadorCodigo}
+              </span>
+              {group.reglaIdl && (
+                <span
+                  data-testid={`regla-badge-${group.agrupadorId}`}
+                  className="text-[10px] font-mono px-1.5 py-0.5"
+                  style={{ color: CR.textDim, border: `1px solid ${CR.border}` }}
+                  title="Regla de agrupación"
+                >
+                  {group.reglaIdl}
+                </span>
+              )}
+              <span className="text-xs font-mono" style={{ color: CR.textDim }}>
+                {group.guias.length} {group.guias.length === 1 ? 'guía' : 'guías'}
+                {' · '}
+                <span className="font-bold" style={{ color: CR.text }}>{clpFormatter.format(group.totalMonto)}</span>
+              </span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              data-testid={`btn-facturar-agrupador-${group.agrupadorId}`}
+              onClick={onFacturarAgrupador}
+              className="text-xs h-7 px-3 rounded-none font-mono uppercase tracking-wider hover:brightness-110 transition-all"
+              style={{ backgroundColor: CR.accent, color: CR.accentFg, borderColor: CR.accent }}
+            >
+              Facturar <kbd className="ml-1 opacity-70">[F]</kbd>
+            </Button>
+          </div>
+        </td>
+      </tr>
+    )
+  }
+
   const chipText = getChipTextColor(color)
   return (
     <tr style={{ backgroundColor: color + '22', borderTop: `2px solid ${color}44` }}>
@@ -147,10 +231,58 @@ interface GuiaRowProps {
   globalIndex: number
   isSelected: boolean
   onCheckbox: (guia: Guia) => void
+  variant: GridVariant
 }
 
-function GuiaRow({ guia, group, globalIndex, isSelected, onCheckbox }: GuiaRowProps) {
+function GuiaRow({ guia, group, globalIndex, isSelected, onCheckbox, variant }: GuiaRowProps) {
   const color = group.agrupadorColor
+
+  if (variant === 'control-room') {
+    return (
+      <tr
+        data-testid={`guia-row-${guia.id}`}
+        className="transition-colors border-l-2"
+        style={{
+          borderLeftColor: color,
+          borderBottom: `1px solid ${CR.border}`,
+          backgroundColor: isSelected ? color + '1a' : CR.bg,
+        }}
+      >
+        <td style={{ padding: '6px 8px' }}>
+          <input
+            data-testid={`checkbox-${guia.id}`}
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onCheckbox(guia)}
+            className="h-3.5 w-3.5 rounded-none border"
+            style={{ accentColor: CR.accent, borderColor: CR.border }}
+          />
+        </td>
+        <td className="whitespace-nowrap tabular-nums font-mono text-xs" style={{ padding: '6px 8px', color: CR.textDim }}>
+          {globalIndex + 1}
+        </td>
+        <td className="whitespace-nowrap text-xs font-semibold font-mono" style={{ padding: '6px 8px', color: CR.text }}>
+          {guia.numero}
+        </td>
+        <td className="whitespace-nowrap text-xs font-mono" style={{ padding: '6px 8px', color: CR.textDim }}>
+          {guia.clienteNombre}
+        </td>
+        <td className="whitespace-nowrap text-xs font-mono" style={{ padding: '6px 8px', color: CR.textDim }}>
+          {guia.fecha}
+        </td>
+        <td className="text-xs max-w-xs truncate" style={{ padding: '6px 8px', color: CR.text }}>
+          {guia.descripcion}
+        </td>
+        <td className="whitespace-nowrap text-xs text-right tabular-nums font-mono" style={{ padding: '6px 8px', color: CR.textDim }}>
+          {guia.cantidad}
+        </td>
+        <td className="whitespace-nowrap text-xs font-bold text-right font-mono" style={{ padding: '6px 8px', color: CR.accent }}>
+          {clpFormatter.format(guia.montoNeto)}
+        </td>
+      </tr>
+    )
+  }
+
   return (
     <tr
       data-testid={`guia-row-${guia.id}`}
@@ -194,8 +326,9 @@ function GuiaRow({ guia, group, globalIndex, isSelected, onCheckbox }: GuiaRowPr
   )
 }
 
-export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, onSeleccionChange }: GuiasGridProps) {
+export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, onSeleccionChange, variant = 'default' }: GuiasGridProps) {
   const parentRef = useRef<HTMLDivElement>(null)
+  const isCR = variant === 'control-room'
 
   const handleCheckbox = (guia: Guia) => {
     onSeleccionChange(guia, !selectedIds.has(guia.id))
@@ -211,7 +344,11 @@ export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, on
   const rowVirtualizer = useVirtualizer({
     count: flatItems.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: (i) => flatItems[i]?.kind === 'header' ? ROW_HEIGHT_HEADER : ROW_HEIGHT_DATA,
+    estimateSize: (i) => {
+      const header = flatItems[i]?.kind === 'header'
+      if (isCR) return header ? ROW_HEIGHT_HEADER_CR : ROW_HEIGHT_DATA_CR
+      return header ? ROW_HEIGHT_HEADER : ROW_HEIGHT_DATA
+    },
     overscan: 5,
   })
 
@@ -220,7 +357,25 @@ export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, on
   const paddingTop = virtualItems.length > 0 ? virtualItems[0].start : 0
   const paddingBottom = totalSize - (virtualItems.at(-1)?.end ?? 0)
 
-  const tableHead = (
+  const columnLabels = ['N° Guía', 'Cliente', 'Fecha', 'Descripción', 'Bultos', 'Monto Neto']
+
+  const tableHead = isCR ? (
+    <thead className="sticky top-0 z-10">
+      <tr style={{ backgroundColor: CR.surface, borderBottom: `1px solid ${CR.borderStrong}` }}>
+        <th style={{ padding: '6px 8px' }} className="w-10" />
+        <th style={{ padding: '6px 8px' }} className="text-left text-[10px] font-semibold uppercase tracking-wider font-mono w-10">#</th>
+        {columnLabels.map((label) => (
+          <th
+            key={label}
+            style={{ padding: '6px 8px', color: CR.textDim }}
+            className={`text-[10px] font-semibold uppercase tracking-wider font-mono ${label === 'Bultos' || label === 'Monto Neto' ? 'text-right' : 'text-left'}`}
+          >
+            {label}
+          </th>
+        ))}
+      </tr>
+    </thead>
+  ) : (
     <thead className="sticky top-0 z-10">
       <tr style={{ backgroundColor: 'var(--muted)', borderBottom: '1px solid var(--border)' }}>
         <th className="px-4 py-3 w-10" />
@@ -237,13 +392,13 @@ export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, on
 
   if (loading) {
     return (
-      <div role="status" data-testid="guias-grid-skeleton">
-        <table className="min-w-full divide-y divide-border">
+      <div role="status" data-testid="guias-grid-skeleton" style={isCR ? { backgroundColor: CR.bg } : undefined}>
+        <table className={isCR ? 'min-w-full' : 'min-w-full divide-y divide-border'}>
           {tableHead}
-          <tbody className="bg-card divide-y divide-border">
-            <SkeletonRow />
-            <SkeletonRow />
-            <SkeletonRow />
+          <tbody className={isCR ? undefined : 'bg-card divide-y divide-border'}>
+            <SkeletonRow variant={variant} />
+            <SkeletonRow variant={variant} />
+            <SkeletonRow variant={variant} />
           </tbody>
         </table>
       </div>
@@ -252,8 +407,14 @@ export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, on
 
   if (guias.length === 0) {
     return (
-      <div data-testid="guias-grid-empty" className="text-center py-12 text-muted-foreground">
-        No hay guías para los filtros seleccionados.
+      <div
+        data-testid="guias-grid-empty"
+        className="text-center py-12 font-mono"
+        style={isCR ? { backgroundColor: CR.bg, color: CR.textDim } : undefined}
+      >
+        {isCR ? '// NO HAY GUÍAS PARA LOS FILTROS SELECCIONADOS' : (
+          <span className="text-muted-foreground">No hay guías para los filtros seleccionados.</span>
+        )}
       </div>
     )
   }
@@ -263,12 +424,12 @@ export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, on
       ref={parentRef}
       data-testid="guias-grid-virtual"
       className="overflow-auto"
-      style={{ height: '600px' }}
+      style={{ height: '600px', ...(isCR ? { backgroundColor: CR.bg } : {}) }}
     >
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-border">
+        <table className={isCR ? 'min-w-full' : 'min-w-full divide-y divide-border'}>
           {tableHead}
-          <tbody className="bg-card divide-y divide-border">
+          <tbody className={isCR ? undefined : 'bg-card divide-y divide-border'}>
             {paddingTop > 0 && (
               <tr><td style={{ height: paddingTop }} /></tr>
             )}
@@ -281,6 +442,7 @@ export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, on
                     key={vr.key}
                     group={item.group}
                     onFacturarAgrupador={() => handleFacturarAgrupador(item.group)}
+                    variant={variant}
                   />
                 )
               }
@@ -292,6 +454,7 @@ export function GuiasGrid({ guias, loading, onFacturarAgrupador, selectedIds, on
                   globalIndex={item.globalIndex}
                   isSelected={selectedIds.has(item.guia.id)}
                   onCheckbox={handleCheckbox}
+                  variant={variant}
                 />
               )
             })}
