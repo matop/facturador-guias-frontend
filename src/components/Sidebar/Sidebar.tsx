@@ -36,7 +36,7 @@ export default function Sidebar() {
           {!collapsed && (
             <div className="min-w-0">
               <span className="text-foreground font-semibold text-base leading-tight block truncate">
-                GDE Sistema
+                Facturador de Guías
               </span>
               <span className="text-muted-foreground text-xs uppercase tracking-wide">
                 Gestión de Guías
@@ -91,7 +91,7 @@ export default function Sidebar() {
       {/* Footer */}
       {!collapsed && (
         <div className="px-5 py-4 border-t border-border">
-          <p className="text-muted-foreground text-xs">GDE Sistema v2.4 · 2026</p>
+          <p className="text-muted-foreground text-xs">Facturador de Guías v2.4 · 2026</p>
         </div>
       )}
     </aside>

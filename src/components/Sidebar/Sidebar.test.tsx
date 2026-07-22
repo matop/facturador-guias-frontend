@@ -19,7 +19,7 @@ describe('Sidebar', () => {
 
   it('shows version footer', () => {
     renderSidebar()
-    expect(screen.getByText(/gde sistema/i, { selector: 'p' })).toBeInTheDocument()
+    expect(screen.getByText(/facturador de guías/i, { selector: 'p' })).toBeInTheDocument()
   })
 
   it('Clientes link active when on /clientes', () => {
