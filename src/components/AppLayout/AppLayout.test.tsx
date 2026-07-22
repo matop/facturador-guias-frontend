@@ -38,7 +38,7 @@ describe('AppLayout', () => {
 
   it('renders sidebar with brand name', () => {
     renderWithRouter()
-    expect(screen.getByText('GDE Sistema')).toBeInTheDocument()
+    expect(screen.getByText('Facturador de Guías')).toBeInTheDocument()
   })
 
   it('renders sidebar subtitle', () => {
