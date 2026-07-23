@@ -26,3 +26,6 @@ dist-ssr
 
 # Test coverage
 coverage
+
+# Scratch / local-only
+tmp/
