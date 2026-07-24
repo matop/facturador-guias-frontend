@@ -119,3 +119,15 @@ pipeline-audit.html   # Standalone — NO importar desde el sistema principal
 - Flujo para documentos rechazados en previsualización.
 - Pantalla de Inicio/Inbox.
 - Pipeline GDE y Auditoría como vistas activas del menú (solo en `pipeline-audit.html`).
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues y specs viven como GitHub Issues en `matop/facturador-guias-frontend` (vía `gh`). Ver `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Repo single-context: `CONTEXT.md` en la raíz (sin `docs/adr/` todavía). Ver `docs/agents/domain.md`.
