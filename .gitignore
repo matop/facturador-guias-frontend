@@ -27,5 +27,9 @@ dist-ssr
 # Test coverage
 coverage
 
+# Playwright
+test-results/
+playwright-report/
+
 # Scratch / local-only
 tmp/

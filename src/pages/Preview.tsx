@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { startTransition, useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSeleccionStore } from '@/store/seleccionStore'
 import { emitirFacturas } from '@/services/api'
@@ -56,8 +56,10 @@ export default function PreviewPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const emitidoRef = useRef(false)
+
   useEffect(() => {
-    if (seleccionActiva.length === 0) {
+    if (seleccionActiva.length === 0 && !emitidoRef.current) {
       navigate('/guias', { replace: true })
     }
   }, [seleccionActiva, navigate])
@@ -93,8 +95,11 @@ export default function PreviewPage() {
         .filter((p) => estados[p.agrupadorId] === 'rechazada')
         .map((p) => p.agrupadorId)
       await emitirFacturas({ aprobadas: agrupadoresAprobados, anuladas: agrupadoresAnulados })
-      limpiar()
-      navigate('/historial', { replace: true })
+      emitidoRef.current = true
+      startTransition(() => {
+        navigate('/historial', { replace: true })
+        limpiar()
+      })
     } catch {
       setError('Error al emitir los DTE. Intente nuevamente.')
     } finally {

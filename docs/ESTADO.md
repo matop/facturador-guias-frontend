@@ -31,7 +31,7 @@ fecha real guía desde BD · header KPI pills conectados a API · MetricsPanel r
 - [x] **PRD v3 Regla Agrupadora (frontend)** — ReglaActivaPopup + ClientesGrid refactor + Sidebar ✅ 2026-05-28
 - [x] Backend: `GET /empresas/:empkey/reglas` → `ReglaDisponible[]` — implementado en guias-middleware 2026-05-29
 - [x] **PRD v4 frontend**: `ResincronizarReglaDialog` + lógica primera activación vs cambio en `ReglaActivaPopup` y `ReglasPorClienteModal` ✅ 2026-06-01
-- [ ] E2E flujo facturación con backends levantados
+- [x] E2E flujo facturación con backends levantados ✅ 2026-07-24 — `e2e/emision.spec.ts`, corrido contra `:5173` + `:3334` reales
 - [ ] Agregar `id_tenant_fk` en ERD Lucidchart
 - [x] Silenciar warnings React Router v7 future flags ✅ 2026-06-01
 
@@ -59,6 +59,7 @@ fecha real guía desde BD · header KPI pills conectados a API · MetricsPanel r
 - **Fecha guía siempre día 1 del mes**: `fetchGuias` hardcodeaba `${periodo}-01`. Causa: `GrupoDto.folios` solo mandaba folio sin fecha. Solución: backend incluye `guifechaemision` en cada entrada del array de folios.
 - **Pill "Facturar" mostraba cantidad de guías**: `AppLayout` usaba `metricas?.totalGuias` en lugar de `metricas?.factEst`. One-liner fix.
 - **MetricsPanel no actualizaba al cambiar período**: `useEffect` sin deps. Solución: agregar `periodo` del store como dep.
+- **Emisión en Preview redirigía a `/guias` en vez de `/historial`**: desde que `BrowserRouter` activó `future.v7_startTransition`, `navigate('/historial')` corre en la lane de transición de React pero `limpiar()` (Zustand, síncrono) no — el guard-effect que redirige a `/guias` cuando `seleccionActiva.length === 0` podía disparar antes de que la navegación a `/historial` se confirmara, mandando al usuario a `/guias` en un flash. Solución: envolver `navigate` + `limpiar` en el mismo `startTransition` dentro de `handleEmitir` (`Preview.tsx`). Nota: el test unitario (`MemoryRouter` + `future` flag) no reproduce la carrera porque `act()` de Testing Library flushea el scheduler sincrónicamente — la cobertura real de esta regresión es el E2E (`e2e/emision.spec.ts`).
 
 ## Contexto Crítico
 
@@ -88,3 +89,5 @@ fecha real guía desde BD · header KPI pills conectados a API · MetricsPanel r
 - **`ReglaActivaPopup`** (v3): fetches sus reglas internamente via `fetchReglasEmpresa`. Requiere endpoint `GET /empresas/:empkey/reglas` en guias-middleware (pendiente). Props: `clienteNombre`, `rut`, `reglaActual`, `onClose`, `onSaved`.
 - **`Cliente.reglaIdl`** (v3): reemplaza `reglaAsignada + reglanombre`. Backend debe enviar `reglaIdl` en DTO `/clientes`. `clientesService` ya mapea el campo nuevo.
 - **AdminReglas**: ruta `/admin/reglas` existe en router pero sin link en Sidebar. Código intacto, no accesible para el operador.
+- **E2E Playwright**: `e2e/emision.spec.ts` + `pnpm test:e2e` — flujo completo de facturación contra `:5173` + backend real `:3334` (empkey=977). Requiere ambos levantados manualmente; cada corrida aprueba/emite una proforma real en QA.
+- **`.claude/worktrees/`**: worktrees de git dejados por trabajo anterior quedaban dentro del glob por defecto de Vitest y rompían `pnpm test` (React duplicado entre `node_modules` de cada worktree). Excluidos explícitamente en `vitest.config.ts` (`test.exclude`).

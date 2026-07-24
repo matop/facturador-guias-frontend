@@ -27,7 +27,10 @@ describe('Preview page', () => {
 
   const renderPage = (initialEntries = ['/preview']) =>
     render(
-      <MemoryRouter initialEntries={initialEntries}>
+      <MemoryRouter
+        initialEntries={initialEntries}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <Routes>
           <Route path="/preview" element={<PreviewPage />} />
           <Route path="/guias" element={<div data-testid="guias-page">Guías Page</div>} />
@@ -148,6 +151,23 @@ describe('Preview page', () => {
     await waitFor(() => {
       expect(screen.getByTestId('historial-page')).toBeInTheDocument()
     })
+    expect(screen.queryByTestId('guias-page')).not.toBeInTheDocument()
+  })
+
+  it('emitir no redirige a /guias aunque seleccionActiva quede vacía antes de navegar a /historial', async () => {
+    const user = userEvent.setup()
+    const api = await import('@/services/api')
+    vi.mocked(api.emitirFacturas).mockImplementation(async () => {
+      useSeleccionStore.setState({ seleccionActiva: [] })
+      return undefined as never
+    })
+    renderPage()
+    await user.click(screen.getByTestId('btn-aprobar-a1'))
+    await user.click(screen.getByTestId('btn-emitir'))
+    await waitFor(() => {
+      expect(screen.getByTestId('historial-page')).toBeInTheDocument()
+    })
+    expect(screen.queryByTestId('guias-page')).not.toBeInTheDocument()
   })
 
   it('muestra "Emitiendo..." mientras se procesa', async () => {
