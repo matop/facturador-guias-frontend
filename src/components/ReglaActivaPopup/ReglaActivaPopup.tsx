@@ -13,10 +13,9 @@ interface ReglaActivaPopupProps {
   rut: string
   reglaActual: string | null
   onClose: () => void
-  onSaved: () => void
 }
 
-export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose, onSaved }: ReglaActivaPopupProps) {
+export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose }: ReglaActivaPopupProps) {
   const [selected, setSelected] = useState<string | null>(reglaActual)
   const [step, setStep] = useState<'select' | 'confirm-resinc'>('select')
   const [pendingReglaIdl, setPendingReglaIdl] = useState<string | null>(null)
@@ -36,7 +35,6 @@ export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose, onS
       opciones ? assignReglaCliente(rut, reglaIdl, opciones) : assignReglaCliente(rut, reglaIdl),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.clientesAll(tenantId) })
-      onSaved()
       onClose()
     },
   })
@@ -46,7 +44,7 @@ export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose, onS
 
     // Primera activación: reglaActual era null → PUT directo
     if (reglaActual === null) {
-      if (!selected) { onSaved(); onClose(); return }
+      if (!selected) { onClose(); return }
       mutation.mutate({ reglaIdl: selected })
       return
     }

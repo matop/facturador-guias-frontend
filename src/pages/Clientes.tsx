@@ -130,7 +130,6 @@ export default function Clientes() {
           rut={popupRut}
           reglaActual={popupCliente.reglaIdl}
           onClose={() => setPopupRut(null)}
-          onSaved={() => {}}
         />
       )}
     </div>

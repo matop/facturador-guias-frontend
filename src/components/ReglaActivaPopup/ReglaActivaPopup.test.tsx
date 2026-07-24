@@ -31,13 +31,11 @@ const defaultProps = {
   rut: '76.543.210-K',
   reglaActual: 'r1',
   onClose: vi.fn(),
-  onSaved: vi.fn(),
 }
 
 beforeEach(() => {
   vi.clearAllMocks()
   defaultProps.onClose = vi.fn()
-  defaultProps.onSaved = vi.fn()
   vi.mocked(api.fetchReglasEmpresa).mockResolvedValue(mockReglas)
   vi.mocked(api.assignReglaCliente).mockResolvedValue(undefined)
 })
@@ -85,7 +83,6 @@ describe('ReglaActivaPopup', () => {
     await user.click(screen.getByRole('button', { name: /guardar/i }))
     await waitFor(() => {
       expect(api.assignReglaCliente).toHaveBeenCalledWith('76.543.210-K', 'r1')
-      expect(defaultProps.onSaved).toHaveBeenCalled()
       expect(defaultProps.onClose).toHaveBeenCalled()
     })
   })
@@ -96,7 +93,7 @@ describe('ReglaActivaPopup', () => {
     await screen.findByText('Por OC')
     await user.click(screen.getByLabelText(/por oc/i))
     await user.click(screen.getByRole('button', { name: /guardar/i }))
-    await waitFor(() => expect(defaultProps.onSaved).toHaveBeenCalled())
+    await waitFor(() => expect(defaultProps.onClose).toHaveBeenCalled())
     expect(screen.queryByText(/re-sincronizar/i)).not.toBeInTheDocument()
   })
 
@@ -125,7 +122,6 @@ describe('ReglaActivaPopup', () => {
       expect(api.assignReglaCliente).toHaveBeenCalledWith(
         '76.543.210-K', 'r2', { recomputar: true, periodo: '2026-05' },
       )
-      expect(defaultProps.onSaved).toHaveBeenCalled()
       expect(defaultProps.onClose).toHaveBeenCalled()
     })
   })
