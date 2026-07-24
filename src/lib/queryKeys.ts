@@ -12,5 +12,6 @@ export const queryKeys = {
   /** Prefijo de todas las keys de `clientes` de la tenant — para invalidar sin importar período/query. */
   clientesAll: (ctx: QueryContext) => ['clientes', ctx.tenantId] as const,
   metricas: (ctx: QueryContext) => ['metricas', ctx.tenantId, ctx.periodo] as const,
+  facturas: (ctx: QueryContext) => ['facturas', ctx.tenantId, ctx.periodo] as const,
   reglasEmpresa: (ctx: QueryContext) => ['reglasEmpresa', ctx.tenantId] as const,
 }

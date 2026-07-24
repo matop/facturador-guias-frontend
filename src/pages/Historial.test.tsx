@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import HistorialPage from './Historial'
 import { usePeriodoStore } from '@/store/periodoStore'
 import { useTenantStore } from '@/store/tenantStore'
+import { renderWithQuery } from '@/test/renderWithQuery'
 import type { Factura } from '@/types'
 
 vi.mock('@/services/api', () => ({
@@ -68,7 +69,7 @@ describe('Historial page', () => {
   })
 
   const renderPage = () =>
-    render(
+    renderWithQuery(
       <MemoryRouter>
         <HistorialPage />
       </MemoryRouter>,
@@ -209,5 +210,34 @@ describe('Historial page', () => {
     await waitFor(() => {
       expect(vi.mocked(api.fetchFacturas)).toHaveBeenCalledTimes(2)
     })
+  })
+
+  it('re-fetcha fetchFacturas cuando cambia la tenant', async () => {
+    // La key incluye tenantId, no sólo el período: cambiar de empresa no puede
+    // dejar el historial de la anterior en pantalla.
+    const api = await import('@/services/api')
+    renderPage()
+    await waitFor(() => {
+      expect(screen.getByTestId('fila-factura-f1')).toBeInTheDocument()
+    })
+    useTenantStore.setState({ tenantId: 'tenant-otra', tenantNombre: 'Otra' })
+    await waitFor(() => {
+      expect(vi.mocked(api.fetchFacturas)).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  // ── Query key ───────────────────────────────────────────────────────────────
+
+  it('no llama fetchFacturas con el QueryFunctionContext como params', async () => {
+    // fetchFacturas(params?) spreadea su argumento al query string, así que
+    // `queryFn: fetchFacturas` filtraría queryKey/signal/meta al backend.
+    const api = await import('@/services/api')
+    renderPage()
+    await waitFor(() => {
+      expect(vi.mocked(api.fetchFacturas)).toHaveBeenCalled()
+    })
+    for (const call of vi.mocked(api.fetchFacturas).mock.calls) {
+      expect(call).toEqual([])
+    }
   })
 })

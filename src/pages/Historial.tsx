@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { fetchFacturas } from '@/services/api'
-import { usePeriodoStore } from '@/store/periodoStore'
+import { useQueryContext } from '@/hooks/useQueryContext'
+import { queryKeys } from '@/lib/queryKeys'
 import { Badge } from '@/components/ui/badge'
 import type { Factura } from '@/types'
 
@@ -38,20 +39,16 @@ function SkeletonRow() {
 }
 
 export default function HistorialPage() {
-  const periodo = usePeriodoStore((s) => s.periodo)
+  const ctx = useQueryContext()
 
-  const [facturas, setFacturas] = useState<Factura[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    fetchFacturas()
-      .then(setFacturas)
-      .catch(() => setError('Error al cargar el historial.'))
-      .finally(() => setLoading(false))
-  }, [periodo])
+  const {
+    data: facturas = [],
+    isLoading: loading,
+    isError,
+  } = useQuery({
+    queryKey: queryKeys.facturas(ctx),
+    queryFn: () => fetchFacturas(),
+  })
 
   const totalEmitidas = facturas.filter((f) => f.estado === 'emitida').length
   const montoTotal = facturas.reduce((sum, f) => sum + f.total, 0)
@@ -83,9 +80,9 @@ export default function HistorialPage() {
 
       {/* Contenido */}
       <div className="flex-1 p-6">
-        {error && (
+        {isError && (
           <div className="mb-4 px-4 py-3 bg-danger-50 border border-destructive rounded-lg text-sm text-destructive" data-testid="error-historial">
-            {error}
+            Error al cargar el historial.
           </div>
         )}
 
