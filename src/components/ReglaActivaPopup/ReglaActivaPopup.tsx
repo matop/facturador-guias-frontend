@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { fetchReglasEmpresa, assignReglaCliente } from '@/services/api'
-import type { ReglaDisponible } from '@/types'
-import { usePeriodoStore } from '@/store/periodoStore'
+import { useQueryContext } from '@/hooks/useQueryContext'
 import { periodoToYYYYMM } from '@/utils/periodo'
+import { queryKeys } from '@/lib/queryKeys'
 import { ResincronizarReglaDialog } from '@/components/ResincronizarReglaDialog/ResincronizarReglaDialog'
 
 interface ReglaActivaPopupProps {
@@ -11,38 +12,38 @@ interface ReglaActivaPopupProps {
   rut: string
   reglaActual: string | null
   onClose: () => void
-  onSaved: () => void
 }
 
-export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose, onSaved }: ReglaActivaPopupProps) {
-  const [reglas, setReglas] = useState<ReglaDisponible[]>([])
+export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose }: ReglaActivaPopupProps) {
   const [selected, setSelected] = useState<string | null>(reglaActual)
-  const [saving, setSaving] = useState(false)
   const [step, setStep] = useState<'select' | 'confirm-resinc'>('select')
   const [pendingReglaIdl, setPendingReglaIdl] = useState<string | null>(null)
 
-  const periodo = usePeriodoStore((s) => s.periodo)
-  const periodoDefault = periodoToYYYYMM(periodo)
+  const ctx = useQueryContext()
+  const periodoDefault = periodoToYYYYMM(ctx.periodo)
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    fetchReglasEmpresa().then(setReglas).catch(() => setReglas([]))
-  }, [])
+  const { data: reglas = [] } = useQuery({
+    queryKey: queryKeys.reglasEmpresa(ctx),
+    queryFn: fetchReglasEmpresa,
+  })
 
-  const handleGuardar = async () => {
+  const mutation = useMutation({
+    mutationFn: ({ reglaIdl, opciones }: { reglaIdl: string; opciones?: { recomputar: boolean; periodo?: string } }) =>
+      opciones ? assignReglaCliente(rut, reglaIdl, opciones) : assignReglaCliente(rut, reglaIdl),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.clientesAll(ctx) })
+      onClose()
+    },
+  })
+
+  const handleGuardar = () => {
     if (selected === reglaActual) { onClose(); return }
 
     // Primera activación: reglaActual era null → PUT directo
     if (reglaActual === null) {
-      setSaving(true)
-      try {
-        if (selected) await assignReglaCliente(rut, selected)
-        onSaved()
-        onClose()
-      } catch {
-        // silencioso
-      } finally {
-        setSaving(false)
-      }
+      if (!selected) { onClose(); return }
+      mutation.mutate({ reglaIdl: selected })
       return
     }
 
@@ -51,18 +52,9 @@ export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose, onS
     setStep('confirm-resinc')
   }
 
-  const handleConfirmResinc = async (opciones: { recomputar: boolean; periodo?: string }) => {
+  const handleConfirmResinc = (opciones: { recomputar: boolean; periodo?: string }) => {
     if (!pendingReglaIdl) return
-    setSaving(true)
-    try {
-      await assignReglaCliente(rut, pendingReglaIdl, opciones)
-      onSaved()
-      onClose()
-    } catch {
-      // silencioso
-    } finally {
-      setSaving(false)
-    }
+    mutation.mutate({ reglaIdl: pendingReglaIdl, opciones })
   }
 
   const handleCancelResinc = () => {
@@ -123,9 +115,9 @@ export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose, onS
         </fieldset>
 
         <div className="flex justify-end gap-2 pt-2">
-          <Button variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
-          <Button onClick={handleGuardar} disabled={saving}>
-            {saving ? 'Guardando...' : 'Guardar'}
+          <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>Cancelar</Button>
+          <Button onClick={handleGuardar} disabled={mutation.isPending}>
+            {mutation.isPending ? 'Guardando...' : 'Guardar'}
           </Button>
         </div>
       </div>

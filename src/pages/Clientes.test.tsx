@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { renderWithQuery } from '@/test/renderWithQuery'
 import Clientes from './Clientes'
 // ReglaActivaPopup es renderizado por Clientes internamente — fetchReglasEmpresa debe estar mockeado
 import { usePeriodoStore } from '@/store/periodoStore'
@@ -43,14 +44,14 @@ describe('Clientes page', () => {
   })
 
   const renderPage = () =>
-    render(
+    renderWithQuery(
       <MemoryRouter>
         <Clientes />
       </MemoryRouter>,
     )
 
   const renderPageWithNav = () =>
-    render(
+    renderWithQuery(
       <MemoryRouter initialEntries={['/clientes']}>
         <Routes>
           <Route path="/clientes" element={<Clientes />} />

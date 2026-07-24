@@ -1,56 +1,41 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { MetricsPanel } from '@/components/MetricsPanel'
 import { ClientesGrid } from '@/components/ClientesGrid'
 import { ReglaActivaPopup } from '@/components/ReglaActivaPopup/ReglaActivaPopup'
 import { usePeriodoStore } from '@/store/periodoStore'
+import { useQueryContext } from '@/hooks/useQueryContext'
 import { fetchClientes } from '@/services/api'
+import { queryKeys } from '@/lib/queryKeys'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { periodoToRange } from '@/utils/periodo'
-import type { Cliente, Periodo } from '@/types'
+import type { Periodo } from '@/types'
 
 export default function Clientes() {
   const navigate = useNavigate()
-  const periodo = usePeriodoStore((s) => s.periodo)
   const setPeriodo = usePeriodoStore((s) => s.setPeriodo)
+  const ctx = useQueryContext()
+  const { periodo } = ctx
 
   const [query, setQuery] = useState('')
-  const [clientes, setClientes] = useState<Cliente[]>([])
-  const [loading, setLoading] = useState(true)
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [debouncedQuery, setDebouncedQuery] = useState('')
 
   // Popup state
   const [popupRut, setPopupRut] = useState<string | null>(null)
 
-  const loadClientes = useCallback(async (q: string) => {
-    setLoading(true)
-    try {
-      const data = await fetchClientes(q || undefined)
-      setClientes(data)
-    } catch {
-      setClientes([])
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  // Fetch al cambiar período
+  // Debounce de 300ms sobre la query key
   useEffect(() => {
-    loadClientes(query)
-  }, [periodo]) // eslint-disable-line react-hooks/exhaustive-deps
+    const timer = setTimeout(() => setDebouncedQuery(query), 300)
+    return () => clearTimeout(timer)
+  }, [query])
 
-  // Fetch con debounce al cambiar query
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => {
-      loadClientes(query)
-    }, 300)
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-    }
-  }, [query]) // eslint-disable-line react-hooks/exhaustive-deps
+  const { data: clientes = [], isLoading: loading } = useQuery({
+    queryKey: queryKeys.clientes(ctx, debouncedQuery),
+    queryFn: () => fetchClientes(debouncedQuery || undefined),
+  })
 
   const popupCliente = clientes.find((c) => c.rut === popupRut)
 
@@ -145,7 +130,6 @@ export default function Clientes() {
           rut={popupRut}
           reglaActual={popupCliente.reglaIdl}
           onClose={() => setPopupRut(null)}
-          onSaved={() => loadClientes(query)}
         />
       )}
     </div>

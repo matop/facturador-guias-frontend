@@ -86,7 +86,8 @@ fecha real guía desde BD · header KPI pills conectados a API · MetricsPanel r
 - **Luminancia WCAG**: `(0.299R + 0.587G + 0.114B)/255 > 0.55` → texto oscuro; si no → texto blanco.
 - **Reglas de negocio**: nunca mezclar guías de distintos meses NI distintos clientes en una factura.
 - **Algoritmo agrupador**: 100% en backend. Frontend solo consume `agrupadorCodigo` + `agrupadorColor`.
-- **`ReglaActivaPopup`** (v3): fetches sus reglas internamente via `fetchReglasEmpresa`. Requiere endpoint `GET /empresas/:empkey/reglas` en guias-middleware (pendiente). Props: `clienteNombre`, `rut`, `reglaActual`, `onClose`, `onSaved`.
+- **`ReglaActivaPopup`** (v3): fetches sus reglas internamente via `fetchReglasEmpresa`. Requiere endpoint `GET /empresas/:empkey/reglas` en guias-middleware (pendiente). Props: `clienteNombre`, `rut`, `reglaActual`, `onClose`. Tras un guardado exitoso invalida `queryKeys.clientesAll(ctx)` y cierra — el parent no necesita callback de refetch.
+- **`useQueryContext()`** (`src/hooks/`): devuelve `{ tenantId, periodo }` memoizado — es el scope de toda query al backend. Todas las factories de `src/lib/queryKeys.ts` reciben ese objeto en vez de strings sueltos. No leer `useTenantStore`/`usePeriodoStore` por separado sólo para armar una query key.
 - **`Cliente.reglaIdl`** (v3): reemplaza `reglaAsignada + reglanombre`. Backend debe enviar `reglaIdl` en DTO `/clientes`. `clientesService` ya mapea el campo nuevo.
 - **AdminReglas**: ruta `/admin/reglas` existe en router pero sin link en Sidebar. Código intacto, no accesible para el operador.
 - **E2E Playwright**: `e2e/emision.spec.ts` + `pnpm test:e2e` — flujo completo de facturación contra `:5173` + backend real `:3334` (empkey=977). Requiere ambos levantados manualmente; cada corrida aprueba/emite una proforma real en QA.

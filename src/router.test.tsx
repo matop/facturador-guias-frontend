@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { renderWithQuery } from '@/test/renderWithQuery'
 import AppRouter from './router'
 
 vi.mock('@/services/api', () => ({
@@ -14,7 +15,7 @@ vi.mock('@/services/api', () => ({
 }))
 
 function renderRouter(path: string) {
-  return render(
+  return renderWithQuery(
     <MemoryRouter initialEntries={[path]}>
       <AppRouter />
     </MemoryRouter>,

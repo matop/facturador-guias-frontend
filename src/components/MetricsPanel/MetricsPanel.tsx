@@ -1,10 +1,11 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { FileText, Users, Receipt } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { MetricCard } from '@/components/MetricCard'
 import { fetchMetricas } from '@/services/api'
-import { usePeriodoStore } from '@/store/periodoStore'
-import type { MetricasResumen } from '@/types'
+import { useQueryContext } from '@/hooks/useQueryContext'
+import { queryKeys } from '@/lib/queryKeys'
 
 interface MetricCardData {
   label: string
@@ -18,20 +19,14 @@ function fmtMonto(n: number): string {
 }
 
 export function MetricsPanel() {
-  const [metricas, setMetricas] = useState<MetricasResumen | null>(null)
-  const [loading, setLoading] = useState(true)
-  const periodo = usePeriodoStore((s) => s.periodo)
+  const ctx = useQueryContext()
 
-  useEffect(() => {
-    setLoading(true)
-    fetchMetricas()
-      .then((data: MetricasResumen) => {
-        setMetricas(data)
-        setLoading(false)
-      })
-  }, [periodo])
+  const { data: metricas, isLoading } = useQuery({
+    queryKey: queryKeys.metricas(ctx),
+    queryFn: fetchMetricas,
+  })
 
-  if (loading || !metricas) {
+  if (isLoading || !metricas) {
     return (
       <div role="status" className="grid grid-cols-3 gap-4">
         {[1, 2, 3].map((i) => (
@@ -55,7 +50,7 @@ export function MetricsPanel() {
     {
       label: 'Clientes involucrados',
       value: metricas.clientesActivos,
-      subtitle: periodo === 'anterior'
+      subtitle: ctx.periodo === 'anterior'
         ? 'período anterior activo'
         : metricas.clientesConRezagadas > 0
           ? `${metricas.clientesConRezagadas} con rezagadas del mes anterior`
