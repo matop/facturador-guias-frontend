@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { renderWithQuery } from '@/test/renderWithQuery'
 import { MetricsPanel } from './MetricsPanel'
 
 vi.mock('@/services/api', () => ({
@@ -25,63 +26,63 @@ describe('MetricsPanel', () => {
 
   describe('estado de carga', () => {
     it('muestra un indicador de carga mientras fetch está en progreso', () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       expect(screen.getByRole('status')).toBeInTheDocument()
     })
   })
 
   describe('datos cargados', () => {
     it('muestra el valor totalGuias (98)', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('98')).toBeInTheDocument()
       })
     })
 
     it('muestra el valor clientesActivos (6)', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('6')).toBeInTheDocument()
       })
     })
 
     it('muestra el monto estimado formateado ($76,0M)', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('$76,0M')).toBeInTheDocument()
       })
     })
 
     it('muestra la etiqueta "Total guías pendientes"', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('Total guías pendientes')).toBeInTheDocument()
       })
     })
 
     it('muestra la etiqueta "Clientes involucrados"', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('Clientes involucrados')).toBeInTheDocument()
       })
     })
 
     it('muestra la etiqueta "Estimación a facturar"', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('Estimación a facturar')).toBeInTheDocument()
       })
     })
 
     it('muestra subtítulo con clientes con rezagadas', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('4 con rezagadas del mes anterior')).toBeInTheDocument()
       })
     })
 
     it('muestra subtítulo con facturas proyectadas', async () => {
-      render(<MetricsPanel />)
+      renderWithQuery(<MetricsPanel />)
       await waitFor(() => {
         expect(screen.getByText('~14 facturas proyectadas')).toBeInTheDocument()
       })
