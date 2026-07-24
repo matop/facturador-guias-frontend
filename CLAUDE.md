@@ -128,6 +128,10 @@ pipeline-audit.html   # Standalone — NO importar desde el sistema principal
 
 Issues y specs viven como GitHub Issues en `matop/facturador-guias-frontend` (vía `gh`). Ver `docs/agents/issue-tracker.md`.
 
+### Triage labels
+
+Los 5 labels canónicos (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), mapeados 1:1. Ver `docs/agents/triage-labels.md`.
+
 ### Domain docs
 
 Repo single-context: `CONTEXT.md` en la raíz (sin `docs/adr/` todavía). Ver `docs/agents/domain.md`.
