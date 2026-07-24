@@ -6,7 +6,7 @@ import { MetricsPanel } from '@/components/MetricsPanel'
 import { ClientesGrid } from '@/components/ClientesGrid'
 import { ReglaActivaPopup } from '@/components/ReglaActivaPopup/ReglaActivaPopup'
 import { usePeriodoStore } from '@/store/periodoStore'
-import { useTenantStore } from '@/store/tenantStore'
+import { useQueryContext } from '@/hooks/useQueryContext'
 import { fetchClientes } from '@/services/api'
 import { queryKeys } from '@/lib/queryKeys'
 import { Input } from '@/components/ui/input'
@@ -16,9 +16,9 @@ import type { Periodo } from '@/types'
 
 export default function Clientes() {
   const navigate = useNavigate()
-  const periodo = usePeriodoStore((s) => s.periodo)
   const setPeriodo = usePeriodoStore((s) => s.setPeriodo)
-  const tenantId = useTenantStore((s) => s.tenantId)
+  const ctx = useQueryContext()
+  const { periodo } = ctx
 
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
@@ -33,7 +33,7 @@ export default function Clientes() {
   }, [query])
 
   const { data: clientes = [], isLoading: loading } = useQuery({
-    queryKey: queryKeys.clientes(tenantId, periodo, debouncedQuery),
+    queryKey: queryKeys.clientes(ctx, debouncedQuery),
     queryFn: () => fetchClientes(debouncedQuery || undefined),
   })
 

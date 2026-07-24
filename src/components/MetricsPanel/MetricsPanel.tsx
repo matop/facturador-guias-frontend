@@ -4,8 +4,7 @@ import { FileText, Users, Receipt } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { MetricCard } from '@/components/MetricCard'
 import { fetchMetricas } from '@/services/api'
-import { usePeriodoStore } from '@/store/periodoStore'
-import { useTenantStore } from '@/store/tenantStore'
+import { useQueryContext } from '@/hooks/useQueryContext'
 import { queryKeys } from '@/lib/queryKeys'
 
 interface MetricCardData {
@@ -20,11 +19,10 @@ function fmtMonto(n: number): string {
 }
 
 export function MetricsPanel() {
-  const periodo = usePeriodoStore((s) => s.periodo)
-  const tenantId = useTenantStore((s) => s.tenantId)
+  const ctx = useQueryContext()
 
   const { data: metricas, isLoading } = useQuery({
-    queryKey: queryKeys.metricas(tenantId, periodo),
+    queryKey: queryKeys.metricas(ctx),
     queryFn: fetchMetricas,
   })
 
@@ -52,7 +50,7 @@ export function MetricsPanel() {
     {
       label: 'Clientes involucrados',
       value: metricas.clientesActivos,
-      subtitle: periodo === 'anterior'
+      subtitle: ctx.periodo === 'anterior'
         ? 'período anterior activo'
         : metricas.clientesConRezagadas > 0
           ? `${metricas.clientesConRezagadas} con rezagadas del mes anterior`

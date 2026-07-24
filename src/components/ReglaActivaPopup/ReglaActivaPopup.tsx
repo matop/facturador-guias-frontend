@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { fetchReglasEmpresa, assignReglaCliente } from '@/services/api'
-import { usePeriodoStore } from '@/store/periodoStore'
-import { useTenantStore } from '@/store/tenantStore'
+import { useQueryContext } from '@/hooks/useQueryContext'
 import { periodoToYYYYMM } from '@/utils/periodo'
 import { queryKeys } from '@/lib/queryKeys'
 import { ResincronizarReglaDialog } from '@/components/ResincronizarReglaDialog/ResincronizarReglaDialog'
@@ -20,13 +19,12 @@ export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose }: R
   const [step, setStep] = useState<'select' | 'confirm-resinc'>('select')
   const [pendingReglaIdl, setPendingReglaIdl] = useState<string | null>(null)
 
-  const periodo = usePeriodoStore((s) => s.periodo)
-  const periodoDefault = periodoToYYYYMM(periodo)
-  const tenantId = useTenantStore((s) => s.tenantId)
+  const ctx = useQueryContext()
+  const periodoDefault = periodoToYYYYMM(ctx.periodo)
   const queryClient = useQueryClient()
 
   const { data: reglas = [] } = useQuery({
-    queryKey: queryKeys.reglasEmpresa(tenantId),
+    queryKey: queryKeys.reglasEmpresa(ctx),
     queryFn: fetchReglasEmpresa,
   })
 
@@ -34,7 +32,7 @@ export function ReglaActivaPopup({ clienteNombre, rut, reglaActual, onClose }: R
     mutationFn: ({ reglaIdl, opciones }: { reglaIdl: string; opciones?: { recomputar: boolean; periodo?: string } }) =>
       opciones ? assignReglaCliente(rut, reglaIdl, opciones) : assignReglaCliente(rut, reglaIdl),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.clientesAll(tenantId) })
+      queryClient.invalidateQueries({ queryKey: queryKeys.clientesAll(ctx) })
       onClose()
     },
   })
